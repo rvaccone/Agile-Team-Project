@@ -1,5 +1,7 @@
-# Rocco Vaccone
+# Phill Anerine, Justus Neumeister, Rocco Vaccone, TaeSeo Um
 # I pledge my honor that I have abided by the Stevens Honor System.
+
+import PrettyTable
 
 gedcom_file = open('./test_gedcom.ged', 'r')
 
