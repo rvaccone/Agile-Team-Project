@@ -6,7 +6,7 @@ from prettytable import PrettyTable
 from datetime import datetime, date
 
 # Open the test_gedcom.ged file
-gedcom_file = open('./test_gedcom1.ged', 'r')
+gedcom_file = open('./test_gedcom.ged', 'r')
 
 # Create a list of all the lines in the file and removing the '\n' character
 gedcom_lines = [line[:-1] for line in gedcom_file.readlines()]
