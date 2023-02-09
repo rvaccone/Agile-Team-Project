@@ -1,4 +1,4 @@
-# Phill Anerine, Justus Neumeister, TaeSeo Um, Rocco Vacconedd
+# Phill Anerine, Mateusz Marciniak, Justus Neumeister, TaeSeo Um, Rocco Vaccone
 # I pledge my honor that I have abided by the Stevens Honor System.
 
 # Imports
@@ -23,8 +23,11 @@ individual_table.field_names = [
 
 # Creating a PrettyTable for families
 family_table = PrettyTable()
-family_table.field_names = ['ID', 'Married', 'Divorced',
+family_table.field_names = ['ID', 'Marriage Date', 'Divorce Date',
                             'Husband ID', 'Wife ID', 'Children']
+
+# for line in gedcom_lines:
+#     assert line[0] != '', 'Error: Invalid level'
 
 individuals = []
 curAssoc = ""
@@ -73,10 +76,16 @@ for line in gedcom_lines:
             elif (tag == "DEAT"):
                 curAssoc = "Death"
         elif (tag == "DATE" and curAssoc != ""):
-            attribute = [curAssoc, elements[2] +
-                         " " + elements[3] + " " + elements[4]]
-            curIndi.append(attribute)
-            curAssoc = ""
+            if (curAssoc == "Birthday" or curAssoc == "Death"):
+                attribute = [curAssoc, elements[2] +
+                             " " + elements[3] + " " + elements[4]]
+                curIndi.append(attribute)
+                curAssoc = ""
+            else:
+                attribute = [curAssoc, elements[2] +
+                             " " + elements[3] + " " + elements[4]]
+                curFam.append(attribute)
+                curAssoc = ""
         elif (elements[0] == "0" and len(elements) > 2 and elements[2] == "FAM"):
             if (len(curFam) > 0):
                 families.append(curFam)
@@ -98,10 +107,16 @@ for line in gedcom_lines:
             elif (tag == "DIV"):
                 curAssoc = "Divorce Date"
         elif (tag == "DATE" and curAssoc != ""):
-            attribute = [curAssoc, elements[2] +
-                         " " + elements[3] + " " + elements[4]]
-            curFam.append(attribute)
-            curAssoc = ""
+            if (curAssoc == "Birthday" or curAssoc == "Death"):
+                attribute = [curAssoc, elements[2] +
+                             " " + elements[3] + " " + elements[4]]
+                curIndi.append(attribute)
+                curAssoc = ""
+            else:
+                attribute = [curAssoc, elements[2] +
+                             " " + elements[3] + " " + elements[4]]
+                curFam.append(attribute)
+                curAssoc = ""
 
     elif (hasStarted):
         if (tag == "BIRT" or tag == "DEAT"):
@@ -109,13 +124,22 @@ for line in gedcom_lines:
                 curAssoc = "Birthday"
             elif (tag == "DEAT"):
                 curAssoc = "Death"
+        if (tag == "MARR" or tag == "DIV"):
+            if (tag == "MARR"):
+                curAssoc = "Marriage Date"
+            elif (tag == "DIV"):
+                curAssoc = "Divorce Date"
         elif (tag == "DATE" and curAssoc != ""):
-            attribute = [curAssoc, elements[2] +
-                         " " + elements[3] + " " + elements[4]]
-            curIndi.append(attribute)
-            curAssoc = ""
-# print(individuals)
-print(families)
+            if (curAssoc == "Birthday" or curAssoc == "Death"):
+                attribute = [curAssoc, elements[2] +
+                             " " + elements[3] + " " + elements[4]]
+                curIndi.append(attribute)
+                curAssoc = ""
+            else:
+                attribute = [curAssoc, elements[2] +
+                             " " + elements[3] + " " + elements[4]]
+                curFam.append(attribute)
+                curAssoc = ""
 
 # Iterating through the individuals list and adding them to the PrettyTable
 for individual in individuals:
@@ -175,18 +199,21 @@ for individual in individuals:
 for family in families:
     family_values = {
         'Family ID': 'N/A',
-        'Married': 'N/A',
-        'Divorced': 'N/A',
+        'Marriage Date': 'N/A',
+        'Divorce Date': 'N/A',
         'Husband ID': 'N/A',
         'Wife ID': 'N/A',
         'Children ID(s)': ['N/A']
     }
 
     for attributes in family:
-        if attributes[0] == 'Child':
+        if attributes[0] == 'Children ID(s)':
             family_values['Children ID(s)'].append(attributes[1])
         else:
             family_values[attributes[0]] = attributes[1]
+
+    if len(family_values['Children ID(s)']) > 1:
+        family_values['Children ID(s)'] = family_values['Children ID(s)'][1:]
 
     family_table.add_row(family_values.values())
 
