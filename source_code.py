@@ -1,9 +1,9 @@
-# Phill Anerine, Justus Neumeister, TaeSeo Um, Rocco Vaccone
+# Phill Anerine, Justus Neumeister, TaeSeo Um, Rocco Vacconedd
 # I pledge my honor that I have abided by the Stevens Honor System.
 
 # Imports
 from prettytable import PrettyTable
-from datetime import datetime
+from datetime import datetime, date
 
 # Open the test_gedcom.ged file
 gedcom_file = open('./test_gedcom1.ged', 'r')
@@ -24,12 +24,15 @@ individual_table.field_names = [
 # Creating a PrettyTable for families
 family_table = PrettyTable()
 family_table.field_names = ['ID', 'Married', 'Divorced',
-                            'Husband ID', 'Husband Name', 'Wife ID', 'Wife Name', 'Children']
+                            'Husband ID', 'Wife ID', 'Children']
 
 individuals = []
 curAssoc = ""
 hasStarted = False
 curIndi = []
+
+families = []
+curFam = []
 
 for line in gedcom_lines:
     # Splitting the line into a list of elements
@@ -47,18 +50,15 @@ for line in gedcom_lines:
         curIndi.append(attribute)
     elif (hasStarted and len(elements) > 1):
         tag = elements[1].strip()
-        if (tag == "SEX" or tag == "FAMC" or tag == "HUSB" or tag == "WIFE"):
+        if (tag == "SEX" or tag == "FAMC" or tag == "FAMS"):
             if (tag == "SEX"):
                 attribute = ["Gender", elements[2].strip()]
                 curIndi.append(attribute)
             elif (tag == "FAMC"):
                 attribute = ["Child", elements[2].strip()]
                 curIndi.append(attribute)
-            elif (tag == "HUSB"):
-                attribute = ["Husband", elements[2].strip()]
-                curIndi.append(attribute)
-            elif (tag == "WIFE"):
-                attribute = ["Wife", elements[2].strip()]
+            elif (tag == "FAMS"):
+                attribute = ["Spouse", elements[2].strip()]
                 curIndi.append(attribute)
         elif (tag == "NAME"):
             if (len(elements) > 3):
@@ -77,6 +77,31 @@ for line in gedcom_lines:
                          " " + elements[3] + " " + elements[4]]
             curIndi.append(attribute)
             curAssoc = ""
+        elif (elements[0] == "0" and len(elements) > 2 and elements[2] == "FAM"):
+            if (len(curFam) > 0):
+                families.append(curFam)
+                curFam = []
+            attribute = ["Family ID", elements[1].strip()]
+            curFam.append(attribute)
+        elif (tag == "HUSB"):
+            attribute = ["Husband ID", elements[2].strip()]
+            curFam.append(attribute)
+        elif (tag == "WIFE"):
+            attribute = ["Wife ID", elements[2].strip()]
+            curFam.append(attribute)
+        elif (tag == "CHIL"):
+            attribute = ["Children ID(s)", elements[2].strip()]
+            curFam.append(attribute)
+        if (tag == "MARR" or tag == "DIV"):
+            if (tag == "MARR"):
+                curAssoc = "Marriage Date"
+            elif (tag == "DIV"):
+                curAssoc = "Divorce Date"
+        elif (tag == "DATE" and curAssoc != ""):
+            attribute = [curAssoc, elements[2] +
+                         " " + elements[3] + " " + elements[4]]
+            curFam.append(attribute)
+            curAssoc = ""
 
     elif (hasStarted):
         if (tag == "BIRT" or tag == "DEAT"):
@@ -89,14 +114,8 @@ for line in gedcom_lines:
                          " " + elements[3] + " " + elements[4]]
             curIndi.append(attribute)
             curAssoc = ""
-
-
 # print(individuals)
-
-def calculate_age(birthday):
-    today = date.today()
-    return today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
-
+print(families)
 
 # Iterating through the individuals list and adding them to the PrettyTable
 for individual in individuals:
@@ -119,17 +138,58 @@ for individual in individuals:
 
     individual_values['Alive'] = True if individual_values['Death'] == 'N/A' else False
 
+    # Calculating the age of the individual
+    if individual_values['Birthday'] != 'N/A':
+        if individual_values['Death'] == 'N/A':
+            death_day, death_month, death_year = datetime.today(
+            ).day, datetime.today().month, datetime.today().year
+        else:
+            death_split = individual_values['Death'].split()
+            death_day, death_month, death_year = int(death_split[0]), int(
+                datetime.strptime(death_split[1], "%b").month), int(death_split[2])
+
+        # Getting the birthday information
+        birthday_split = individual_values['Birthday'].split()
+        birth_day, birth_month, birth_year = int(birthday_split[0]), int(
+            datetime.strptime(birthday_split[1], "%b").month), int(birthday_split[2])
+
+        # Calculating the age using an equation
+        age = death_year - birth_year - \
+            ((death_month, death_day) < (birth_month, birth_day))
+
     if individual_values['Birthday'] != 'N/A':
         if individual_values['Death'] == 'N/A':
             death_year = datetime.today().year
+            # print(datetime.today().month + (datetime.today().day / 100))
         else:
             death_year = int(individual_values['Death'].split()[-1])
         birth_year = int(individual_values['Birthday'].split()[-1])
         age = death_year - birth_year
+
         individual_values['Age'] = age
 
     # Adding the individual to the PrettyTable
     individual_table.add_row(individual_values.values())
 
+# Adding the families to the PrettyTable
+for family in families:
+    family_values = {
+        'Family ID': 'N/A',
+        'Married': 'N/A',
+        'Divorced': 'N/A',
+        'Husband ID': 'N/A',
+        'Wife ID': 'N/A',
+        'Children ID(s)': ['N/A']
+    }
+
+    for attributes in family:
+        if attributes[0] == 'Child':
+            family_values['Children ID(s)'].append(attributes[1])
+        else:
+            family_values[attributes[0]] = attributes[1]
+
+    family_table.add_row(family_values.values())
+
 # Printing the PrettyTable
 print(individual_table)
+print(family_table)
