@@ -141,11 +141,11 @@ for line in gedcom_lines:
                 curFam.append(attribute)
                 curAssoc = ""
 
-if(len(curIndi)!=0):
+if (len(curIndi) != 0):
     individuals.append(curIndi)
-if(len(curFam) != 0):
+if (len(curFam) != 0):
     families.append(curFam)
- 
+
 
 # Iterating through the individuals list and adding them to the PrettyTable
 for individual in individuals:
@@ -226,3 +226,8 @@ for family in families:
 # Printing the PrettyTable
 print(individual_table)
 print(family_table)
+
+# Writing the PrettyTable to an output file
+with open('./output.txt', 'w') as output_file:
+    output_file.write(str(individual_table) + '\n')
+    output_file.write(str(family_table) + '\n')
