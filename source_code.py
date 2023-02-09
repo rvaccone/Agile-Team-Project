@@ -141,6 +141,12 @@ for line in gedcom_lines:
                 curFam.append(attribute)
                 curAssoc = ""
 
+if(len(curIndi)!=0):
+    individuals.append(curIndi)
+if(len(curFam) != 0):
+    families.append(curFam)
+ 
+
 # Iterating through the individuals list and adding them to the PrettyTable
 for individual in individuals:
     # Creating a dictionary of all the values for the individual
