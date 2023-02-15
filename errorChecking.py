@@ -68,7 +68,30 @@ def families_error_checking(family_list, individual_list):
                         wifeDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
                         assert(divorceDate < wifeDeathDate), "Divorce date is after wife's death date"
 
-        # [US05] - Justus
+        # [US01] - Justus
+        if family['Marriage Date'] != 'N/A':
+            date = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
+            curDate = datetime.now()
+            assert(date < curDate)
+        if family['Divorce Date'] != 'N/A':
+            date = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
+            curDate = datetime.now()
+            assert(date < curDate)
 
+        # [US05] - Justus
+        if family['Marriage Date'] != 'N/A':
+            for individual in individual_list:
+                if individual['ID'] == family['Husband ID']:
+                    if individual['Death'] != 'N/A':
+                        divorceDate = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
+                        husbandDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
+                        assert(divorceDate < husbandDeathDate), "Marriage date is after husband's death date"
+                
+
+                if individual['ID'] == family['Wife ID']:
+                    if individual['Death'] != 'N/A':
+                        divorceDate = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
+                        wifeDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
+                        assert(divorceDate < wifeDeathDate), "Marriage date is after wife's death date"
     
     
