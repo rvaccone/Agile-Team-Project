@@ -19,6 +19,8 @@ def initial_error_checking(gedcom_lines):
 
 # Error checking the individuals
 def individuals_error_checking(individual_list):
+    #US02
+    birth_before_death(individual_list)
     for individual in individual_list:
         # [US07] - TaeSeo
         if individual['Age'] != 'N/A':
@@ -51,6 +53,8 @@ def individuals_error_checking(individual_list):
 
 # Error checking the families
 def families_error_checking(family_list, individual_list):
+    #US03
+    birth_before_marriage(individual_list, family_list)
     for family in family_list:
         # [US06] - TaeSeo Um
         if family['Divorce Date'] != 'N/A':
