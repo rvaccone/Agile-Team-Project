@@ -1,4 +1,5 @@
 from datetime import datetime, date
+
 # Initial error checking of incorrect lines
 def initial_error_checking(gedcom_lines):
     for index, line in enumerate(gedcom_lines):
@@ -31,6 +32,21 @@ def individuals_error_checking(individual_list):
         if individual['Age'] != 'N/A' and individual['Spouse'] != 'N/A':
             assert(int(individual['Age']) >= 14, 'Individual is too young to be married')
 
+        # Check that each birth date is before the current Date
+        if individual['Birthday'] != 'N/A':
+            date = individual['Birthday'].split()
+            day, month, year = int(date[0]), int(
+                datetime.strptime(date[1], "%b").month), int(date[2])
+            curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
+            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay))
+
+        # Check that each death date is before the current Date
+        if individual['Death'] != 'N/A':
+            date = individual['Death'].split()
+            day, month, year = int(date[0]), int(
+                datetime.strptime(date[1], "%b").month), int(date[2])
+            curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
+            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay))
     
 
 # Error checking the families
