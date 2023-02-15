@@ -1,5 +1,5 @@
 # Imported packages
-import unittest🙄
+import unittest
 
 # Imported files
 from projectDictionaries import *
