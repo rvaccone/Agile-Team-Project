@@ -52,7 +52,7 @@ def individuals_error_checking(individual_list):
 # Error checking the families
 def families_error_checking(family_list, individual_list):
     for family in family_list:
-        # [US06] - TaeSeo
+        # [US06] - TaeSeo Um
         if family['Divorce Date'] != 'N/A':
             for individual in individual_list:
                 if individual['ID'] == family['Husband ID']:
