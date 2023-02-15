@@ -104,7 +104,7 @@ for family in family_list:
 ec.individuals_error_checking(individual_list)
 
 # Error checking the families
-ec.families_error_checking(family_list)
+ec.families_error_checking(family_list, individual_list)
 
 # Adding the individuals to the individual table
 for individual in individual_list:
