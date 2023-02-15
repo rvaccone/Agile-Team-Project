@@ -3,6 +3,8 @@ import unittest
 
 # Imported files
 from projectDictionaries import *
+import errorChecking as ec
+from individualUnitTests import IndividualTests
 
 class FamilyTests(unittest.TestCase):
     # Initializing an empty list to contain all the families
@@ -18,5 +20,14 @@ class FamilyTests(unittest.TestCase):
     # Creating a function to return the list of families
     def get_family_list(self):
         return self.family_list
+
+
+#create a function to check if all divorce dates are before death
+def checkAllDivorceDatesAreBeforeDeath():
+    family = FamilyTests()
+    family.create_family(family_dict)['Divorce'] = '1 JAN 2000'
+    individual = IndividualTests()
+    individual.create_individual(individual_dict)['Death'] = '1 JAN 1999'
+    
 
 
