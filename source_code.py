@@ -231,3 +231,139 @@ print(family_table)
 with open('./output.txt', 'w') as output_file:
     output_file.write(str(individual_table) + '\n')
     output_file.write(str(family_table) + '\n')
+
+
+# TS USER STORY 
+def ageLessThan150(individuals):
+    # print every individual's age corresponding to their ID
+    for individual in individuals:
+        individual_values = {
+            'ID': 'N/A',
+            'Name': 'N/A',
+            'Gender': 'N/A',
+            'Birthday': 'N/A',
+            'Age': 'N/A',
+            'Alive': 'N/A',
+            'Death': 'N/A',
+            'Child': 'N/A',
+            'Spouse': 'N/A'
+        }
+
+        for attributes in individual:
+            individual_values[attributes[0]] = attributes[1]
+
+        individual_values['Alive'] = True if individual_values['Death'] == 'N/A' else False
+
+        if individual_values['Birthday'] != 'N/A':
+            if individual_values['Death'] == 'N/A':
+                death_year = datetime.today().year
+            else:
+                death_year = int(individual_values['Death'].split()[-1])
+            birth_year = int(individual_values['Birthday'].split()[-1])
+            age = death_year - birth_year
+
+            individual_values['Age'] = age
+
+        if individual_values['Age'] >= 150:
+            print("ERROR: STORY ID US07: {}: Age is greater than 150 years old".format(individual_values['ID']))
+            return False
+    return True
+
+
+# TS USER STORY
+def divorceBeforeDeath(individuals, families):
+    for family in families:
+        family_values = {
+            'Family ID': 'N/A',
+            'Marriage Date': 'N/A',
+            'Divorce Date': 'N/A',
+            'Husband ID': 'N/A',
+            'Wife ID': 'N/A',
+            'Children ID(s)': ['N/A']
+        }
+
+        for attributes in family:
+            if attributes[0] == 'Children ID(s)':
+                family_values['Children ID(s)'].append(attributes[1])
+            else:
+                family_values[attributes[0]] = attributes[1]
+
+        if len(family_values['Children ID(s)']) > 1:
+            family_values['Children ID(s)'] = family_values['Children ID(s)'][1:]
+
+        husband_death = None
+        wife_death = None
+        divorce_date = None
+
+        for individual in individuals:
+            if individual[0][1] == family_values['Husband ID']:
+                for attr in individual:
+                    if attr[0] == 'Death':
+                        husband_death = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+            elif individual[0][1] == family_values['Wife ID']:
+                for attr in individual:
+                    if attr[0] == 'Death':
+                        wife_death = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+        if family_values['Divorce Date'] != 'N/A' and husband_death and wife_death:
+            divorce_date = datetime.strptime(family_values['Divorce Date'], '%d %b %Y').date()
+            if husband_death < divorce_date or wife_death < divorce_date:
+                print(f"ERROR: STORY ID US06: {family_values['Family ID']}: Divorce date is after death date of either husband or wife")
+                return False
+
+        #print all the family's divorce date
+        print(family_values['Divorce Date'])
+
+    return True
+
+#JUSTUS USER STORY
+def marriageBeforeDeath(individuals, families):
+    for family in families:
+        family_values = {
+            'Family ID': 'N/A',
+            'Marriage Date': 'N/A',
+            'Divorce Date': 'N/A',
+            'Husband ID': 'N/A',
+            'Wife ID': 'N/A',
+            'Children ID(s)': ['N/A']
+        }
+
+        for attributes in family:
+            if attributes[0] == 'Children ID(s)':
+                family_values['Children ID(s)'].append(attributes[1])
+            else:
+                family_values[attributes[0]] = attributes[1]
+
+        if len(family_values['Children ID(s)']) > 1:
+            family_values['Children ID(s)'] = family_values['Children ID(s)'][1:]
+
+        husband_death = None
+        wife_death = None
+        marriage_date = None
+
+        for individual in individuals:
+            if individual[0][1] == family_values['Husband ID']:
+                for attr in individual:
+                    if attr[0] == 'Death':
+                        husband_death = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+            elif individual[0][1] == family_values['Wife ID']:
+                for attr in individual:
+                    if attr[0] == 'Death':
+                        wife_death = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+        if family_values['Divorce Date'] != 'N/A' and husband_death and wife_death:
+            marriage_date = datetime.strptime(family_values['Marriage Date'], '%d %b %Y').date()
+            if husband_death < marriage_date or wife_death < marriage_date:
+                print(f"ERROR: STORY ID US06: {family_values['Family ID']}: Divorce date is after death date of either husband or wife")
+                return False
+
+        #print all the family's divorce date
+        #print(family_values['Marriage Date'])
+
+    return True
