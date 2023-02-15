@@ -22,7 +22,7 @@ def individuals_error_checking(individual_list):
     for individual in individual_list:
         # [US07] - TaeSeo
         if individual['Age'] != 'N/A':
-            assert(int(individual['Age']) < 150)
+            assert(int(individual['Age']) < 150), "Individual is too old"
 
         # [US12] - Rocco 
         if individual['Age'] != 'N/A' and individual['Children'] != []:
@@ -59,14 +59,14 @@ def families_error_checking(family_list, individual_list):
                     if individual['Death'] != 'N/A':
                         divorceDate = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
                         husbandDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
-                        assert(divorceDate < husbandDeathDate)
+                        assert(divorceDate < husbandDeathDate), "Divorce date is after husband's death date"
                 
 
                 if individual['ID'] == family['Wife ID']:
                     if individual['Death'] != 'N/A':
                         divorceDate = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
                         wifeDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
-                        assert(divorceDate < wifeDeathDate)
+                        assert(divorceDate < wifeDeathDate), "Divorce date is after wife's death date"
 
         # [US05] - Justus
 
