@@ -38,7 +38,7 @@ def individuals_error_checking(individual_list):
             day, month, year = int(date[0]), int(
                 datetime.strptime(date[1], "%b").month), int(date[2])
             curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
-            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay))
+            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Birth date is after today's date"
 
         # [US01] - Justus
         if individual['Death'] != 'N/A':
@@ -46,7 +46,7 @@ def individuals_error_checking(individual_list):
             day, month, year = int(date[0]), int(
                 datetime.strptime(date[1], "%b").month), int(date[2])
             curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
-            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay))
+            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Death date is after today's date"
     
 
 # Error checking the families
@@ -72,11 +72,11 @@ def families_error_checking(family_list, individual_list):
         if family['Marriage Date'] != 'N/A':
             date = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
             curDate = datetime.now()
-            assert(date < curDate)
+            assert(date < curDate), "Marriage date is after today's date"
         if family['Divorce Date'] != 'N/A':
             date = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
             curDate = datetime.now()
-            assert(date < curDate)
+            assert(date < curDate), "Divorce date is after today's date"
 
         # [US05] - Justus
         if family['Marriage Date'] != 'N/A':
