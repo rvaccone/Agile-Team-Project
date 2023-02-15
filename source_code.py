@@ -367,3 +367,97 @@ def marriageBeforeDeath(individuals, families):
         #print(family_values['Marriage Date'])
 
     return True
+
+#Mateusz USER STORY
+#If there are individuals in the list for whom birth and death dates are not both available, or all individuals were born after they died, the function will return False.
+def birth_before_death(individuals):
+    for individual in individuals:
+        individual_values = {
+            'ID': 'N/A',
+            'Name': 'N/A',
+            'Gender': 'N/A',
+            'Birthday': 'N/A',
+            'Age': 'N/A',
+            'Alive': 'N/A',
+            'Death': 'N/A',
+            'Child': 'N/A',
+            'Spouse': 'N/A'
+        }
+
+        for attributes in individual:
+            individual_values[attributes[0]] = attributes[1]
+
+        #if(individual_values['Death'] == 'N/A' and individual_values['Alive'] == 'True'):
+        #    return True
+        
+        if(individual_values['Death'] == 'N/A' or individual_values['Birthday'] == 'N/A'):
+            continue
+
+        birthdate = individual_values['Birthday'].split()
+        Birthday, Birthmon, Birthyear = birthdate[0], birthdate[1], birthdate[2]
+
+        deathdate = individual_values['Death'].split()
+        Deathday, Deathmon, Deathyear = deathdate[0], deathdate[1], deathdate[2]
+
+        if(Deathyear > Birthyear):
+            return True
+        elif(Birthyear == Deathyear):
+            if(datetime.strptime(Deathmon, '%b').month > datetime.strptime(Birthmon, '%b').month):
+                return True
+            if(datetime.strptime(Deathmon, '%b').month == datetime.strptime(Birthmon, '%b').month):
+                if(Deathday >= Birthday):
+                    return True
+        else:
+            print('ERR0R: Death was before birth')
+            return False
+        
+    return False
+
+    
+#Mateusz USER STORY
+#doesnt check if birthday is missing, maybe new user story?
+def birth_before_marriage(individuals, families):
+    
+    for family in families:
+        family_values = {
+            'Family ID': 'N/A',
+            'Marriage Date': 'N/A',
+            'Divorce Date': 'N/A',
+            'Husband ID': 'N/A',
+            'Wife ID': 'N/A',
+            'Children ID(s)': ['N/A']
+        }
+
+        for attributes in family:
+            if attributes[0] == 'Children ID(s)':
+                family_values['Children ID(s)'].append(attributes[1])
+            else:
+                family_values[attributes[0]] = attributes[1]
+
+        if len(family_values['Children ID(s)']) > 1:
+            family_values['Children ID(s)'] = family_values['Children ID(s)'][1:]
+
+        husband_birth = None
+        wife_birth = None
+        marriage_date = None
+
+        for individual in individuals:
+            if individual[0][1] == family_values['Husband ID']:
+                for attr in individual:
+                    if attr[0] == 'Birthday':
+                        husband_birth = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+            elif individual[0][1] == family_values['Wife ID']:
+                for attr in individual:
+                    if attr[0] == 'Birthday':
+                        wife_birth = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+        if family_values['Marriage Date'] != 'N/A' and husband_birth and wife_birth:
+            marriage_date = datetime.strptime(family_values['Marriage Date'], '%d %b %Y').date()
+            if husband_birth > marriage_date or wife_birth > marriage_date:
+                print(f"ERROR: STORY ID US08: {family_values['Family ID']}: Birth date is before Marraige Date of either husband or wife")
+                return False
+
+    return True
