@@ -40,7 +40,7 @@ def individuals_error_checking(individual_list):
             day, month, year = int(date[0]), int(
                 datetime.strptime(date[1], "%b").month), int(date[2])
             curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
-            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay))
+            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Birth date is after today's date"
 
         # [US01] - Justus
         if individual['Death'] != 'N/A':
@@ -48,7 +48,7 @@ def individuals_error_checking(individual_list):
             day, month, year = int(date[0]), int(
                 datetime.strptime(date[1], "%b").month), int(date[2])
             curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
-            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay))
+            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Death date is after today's date"
     
 
 # Error checking the families
@@ -72,8 +72,17 @@ def families_error_checking(family_list, individual_list):
                         wifeDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
                         assert(divorceDate < wifeDeathDate), "Divorce date is after wife's death date"
 
-        # [US05] - Justus
+        # [US01] - Justus
+        if family['Marriage Date'] != 'N/A':
+            date = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
+            curDate = datetime.now()
+            assert(date < curDate), "Marriage date is after today's date"
+        if family['Divorce Date'] != 'N/A':
+            date = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
+            curDate = datetime.now()
+            assert(date < curDate), "Divorce date is after today's date"
 
+<<<<<<< HEAD
 #Mateusz USER STORY 02
 #If there are individuals in the list for whom birth and death dates are not both available, or all individuals were born after they died, the function will return False.
 def birth_before_death(individuals):
@@ -119,52 +128,8 @@ def birth_before_death(individuals):
         
     return False
 
+=======
+        # [US05] - Justus
+
     
-#Mateusz USER STORY 03
-#doesnt check if birthday is missing, maybe new user story?
-def birth_before_marriage(individuals, families):
-    
-    for family in families:
-        family_values = {
-            'Family ID': 'N/A',
-            'Marriage Date': 'N/A',
-            'Divorce Date': 'N/A',
-            'Husband ID': 'N/A',
-            'Wife ID': 'N/A',
-            'Children ID(s)': ['N/A']
-        }
-
-        for attributes in family:
-            if attributes[0] == 'Children ID(s)':
-                family_values['Children ID(s)'].append(attributes[1])
-            else:
-                family_values[attributes[0]] = attributes[1]
-
-        if len(family_values['Children ID(s)']) > 1:
-            family_values['Children ID(s)'] = family_values['Children ID(s)'][1:]
-
-        husband_birth = None
-        wife_birth = None
-        marriage_date = None
-
-        for individual in individuals:
-            if individual[0][1] == family_values['Husband ID']:
-                for attr in individual:
-                    if attr[0] == 'Birthday':
-                        husband_birth = datetime.strptime(attr[1], '%d %b %Y').date()
-                        break
-
-            elif individual[0][1] == family_values['Wife ID']:
-                for attr in individual:
-                    if attr[0] == 'Birthday':
-                        wife_birth = datetime.strptime(attr[1], '%d %b %Y').date()
-                        break
-
-        if family_values['Marriage Date'] != 'N/A' and husband_birth and wife_birth:
-            marriage_date = datetime.strptime(family_values['Marriage Date'], '%d %b %Y').date()
-            if husband_birth > marriage_date or wife_birth > marriage_date:
-                print(f"ERROR: STORY ID US03: {family_values['Family ID']}: Birth date is before Marraige Date of either husband or wife")
-                return False
-
-    return True    
     
