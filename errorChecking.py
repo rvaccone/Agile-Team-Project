@@ -26,11 +26,11 @@ def individuals_error_checking(individual_list):
 
         # [US12] - Rocco 
         if individual['Age'] != 'N/A' and individual['Children'] != []:
-            assert(int(individual['Age']) < 150, 'Individual is too old to be a parent')
+            assert int(individual['Age']) < 150, "Individual is too old to be a parent"
 
         # [US10] - Rocco
         if individual['Age'] != 'N/A' and individual['Spouse'] != 'N/A':
-            assert(int(individual['Age']) >= 14, 'Individual is too young to be married')
+            assert int(individual['Age']) >= 14, "Individual is too young to be married"
 
         # [US01] - Justus
         if individual['Birthday'] != 'N/A':
