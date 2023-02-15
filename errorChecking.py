@@ -190,7 +190,3 @@ def birth_before_marriage(individuals, families):
                 return False
 
     return True
-
-
-    
-    

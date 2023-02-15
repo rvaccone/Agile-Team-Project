@@ -3,7 +3,6 @@ import unittest
 
 # Imported files
 from projectDictionaries import *
-
 import errorChecking as ec
 
 class IndividualTests(unittest.TestCase):
