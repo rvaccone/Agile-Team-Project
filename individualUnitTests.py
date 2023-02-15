@@ -1,9 +1,10 @@
 # Imported packages
 import unittest
-import errorChecking as ec
 
 # Imported files
 from projectDictionaries import *
+
+import errorChecking as ec
 
 class IndividualTests(unittest.TestCase):
     # Initializing an empty list to contain all the individuals
@@ -19,8 +20,6 @@ class IndividualTests(unittest.TestCase):
     # Creating a function to return the list of individuals
     def get_individual_list(self):
         return self.individual_list
-
-
 
 def checkIndividualNotTooOld():
     individual = IndividualTests()
