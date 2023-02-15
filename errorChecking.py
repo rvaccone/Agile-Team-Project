@@ -19,6 +19,8 @@ def initial_error_checking(gedcom_lines):
 
 # Error checking the individuals
 def individuals_error_checking(individual_list):
+    #US02
+    birth_before_death(individual_list)
     for individual in individual_list:
         # [US07] - TaeSeo
         if individual['Age'] != 'N/A':
@@ -51,6 +53,8 @@ def individuals_error_checking(individual_list):
 
 # Error checking the families
 def families_error_checking(family_list, individual_list):
+    #US03
+    birth_before_marriage(individual_list, family_list)
     for family in family_list:
         # [US06] - TaeSeo Um
         if family['Divorce Date'] != 'N/A':
@@ -78,20 +82,100 @@ def families_error_checking(family_list, individual_list):
             curDate = datetime.now()
             assert(date < curDate), "Divorce date is after today's date"
 
-        # [US05] - Justus
-        if family['Marriage Date'] != 'N/A':
-            for individual in individual_list:
-                if individual['ID'] == family['Husband ID']:
-                    if individual['Death'] != 'N/A':
-                        divorceDate = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
-                        husbandDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
-                        assert(divorceDate < husbandDeathDate), "Marriage date is after husband's death date"
-                
+#Mateusz USER STORY 02
+#If there are individuals in the list for whom birth and death dates are not both available, or all individuals were born after they died, the function will return False.
+def birth_before_death(individuals):
+    for individual in individuals:
+        individual_values = {
+            'ID': 'N/A',
+            'Name': 'N/A',
+            'Gender': 'N/A',
+            'Birthday': 'N/A',
+            'Age': 'N/A',
+            'Alive': 'N/A',
+            'Death': 'N/A',
+            'Child': 'N/A',
+            'Spouse': 'N/A'
+        }
 
-                if individual['ID'] == family['Wife ID']:
-                    if individual['Death'] != 'N/A':
-                        divorceDate = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
-                        wifeDeathDate = datetime.strptime(individual['Death'], '%d %b %Y').date()
-                        assert(divorceDate < wifeDeathDate), "Marriage date is after wife's death date"
+        for attributes in individual:
+            individual_values[attributes[0]] = attributes[1]
+
+        #if(individual_values['Death'] == 'N/A' and individual_values['Alive'] == 'True'):
+        #    return True
+        
+        if(individual_values['Death'] == 'N/A' or individual_values['Birthday'] == 'N/A'):
+            continue
+
+        birthdate = individual_values['Birthday'].split()
+        Birthday, Birthmon, Birthyear = birthdate[0], birthdate[1], birthdate[2]
+
+        deathdate = individual_values['Death'].split()
+        Deathday, Deathmon, Deathyear = deathdate[0], deathdate[1], deathdate[2]
+
+        if(Deathyear > Birthyear):
+            return True
+        elif(Birthyear == Deathyear):
+            if(datetime.strptime(Deathmon, '%b').month > datetime.strptime(Birthmon, '%b').month):
+                return True
+            if(datetime.strptime(Deathmon, '%b').month == datetime.strptime(Birthmon, '%b').month):
+                if(Deathday >= Birthday):
+                    return True
+        else:
+            print('ERR0R: Death was before birth')
+            return False
+        
+    return False
+
+    
+#Mateusz USER STORY 03
+#doesnt check if birthday is missing, maybe new user story?
+def birth_before_marriage(individuals, families):
+    
+    for family in families:
+        family_values = {
+            'Family ID': 'N/A',
+            'Marriage Date': 'N/A',
+            'Divorce Date': 'N/A',
+            'Husband ID': 'N/A',
+            'Wife ID': 'N/A',
+            'Children ID(s)': ['N/A']
+        }
+
+        for attributes in family:
+            if attributes[0] == 'Children ID(s)':
+                family_values['Children ID(s)'].append(attributes[1])
+            else:
+                family_values[attributes[0]] = attributes[1]
+
+        if len(family_values['Children ID(s)']) > 1:
+            family_values['Children ID(s)'] = family_values['Children ID(s)'][1:]
+
+        husband_birth = None
+        wife_birth = None
+        marriage_date = None
+
+        for individual in individuals:
+            if individual[0][1] == family_values['Husband ID']:
+                for attr in individual:
+                    if attr[0] == 'Birthday':
+                        husband_birth = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+            elif individual[0][1] == family_values['Wife ID']:
+                for attr in individual:
+                    if attr[0] == 'Birthday':
+                        wife_birth = datetime.strptime(attr[1], '%d %b %Y').date()
+                        break
+
+        if family_values['Marriage Date'] != 'N/A' and husband_birth and wife_birth:
+            marriage_date = datetime.strptime(family_values['Marriage Date'], '%d %b %Y').date()
+            if husband_birth > marriage_date or wife_birth > marriage_date:
+                print(f"ERROR: STORY ID US03: {family_values['Family ID']}: Birth date is before Marraige Date of either husband or wife")
+                return False
+
+    return True
+
+
     
     
