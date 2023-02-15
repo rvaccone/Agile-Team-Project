@@ -55,4 +55,14 @@ def families_error_checking(family_list, individual_list):
         # if marriage date is after death date of either spouse, assert false
         if family['Marriage Date'] != 'N/A' and family['Divorce Date'] and family['Husband ID'] != 'N/A' and family['Wife ID'] != 'N/A':
             for individual in individual_list:
-                
+                if individual['ID'] == family['Husband ID']:
+                    divorceDate = datetime.strptime(family['Divorce Date'], '%d %b %Y')
+                    husbandDeathDate = datetime.strptime(individual['Death'], '%d %b %Y')
+                    assert(divorceDate < husbandDeathDate)
+
+                if individual['ID'] == family['Wife ID']:
+                    divorceDate = datetime.strptime(family['Divorce Date'], '%d %b %Y')
+                    wifeDeathDate = datetime.strptime(individual['Death'], '%d %b %Y')
+                    assert(divorceDate < wifeDeathDate)
+    
+    
