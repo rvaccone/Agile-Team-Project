@@ -20,11 +20,11 @@ def individuals_error_checking(individual_list):
     for individual in individual_list:
         # Check that each parent is not too old
         if individual['Age'] != 'N/A' and individual['Children'] != []:
-            assert(int(individual['Age']) < 150)
+            assert(int(individual['Age']) < 150, 'Individual is too old to be a parent')
 
         # Checking that each marriage is after when the individual is 14
         if individual['Age'] != 'N/A' and individual['Spouse'] != 'N/A':
-            assert(int(individual['Age']) >= 14)
+            assert(int(individual['Age']) >= 14, 'Individual is too young to be married')
 
 # Error checking the families
 def families_error_checking(family_list):
