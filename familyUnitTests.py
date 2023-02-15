@@ -4,7 +4,7 @@ import unittest
 # Imported files
 from projectDictionaries import *
 
-class FamilyTests():
+class FamilyTests(unittest.TestCase):
     # Initializing an empty list to contain all the families
     def __init__(self):
         self.family_list = []
@@ -16,5 +16,3 @@ class FamilyTests():
     # Creating a function to return the list of families
     def get_family_list(self):
         return self.family_list
-
-# ProjectFamilyTests = FamilyTests()
