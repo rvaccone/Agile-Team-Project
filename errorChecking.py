@@ -53,7 +53,7 @@ def individuals_error_checking(individual_list):
 def families_error_checking(family_list, individual_list):
     for family in family_list:
         # [US06] - TaeSeo
-        if family['Marriage Date'] != 'N/A' and family['Divorce Date'] and family['Husband ID'] != 'N/A' and family['Wife ID'] != 'N/A':
+        if family['Divorce Date'] != 'N/A':
             for individual in individual_list:
                 if individual['ID'] == family['Husband ID']:
                     divorceDate = datetime.strptime(family['Divorce Date'], '%d %b %Y')
@@ -66,6 +66,6 @@ def families_error_checking(family_list, individual_list):
                     assert(divorceDate < wifeDeathDate)
 
         # [US05] - Justus
-        
+
     
     
