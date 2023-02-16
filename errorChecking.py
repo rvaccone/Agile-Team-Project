@@ -1,5 +1,5 @@
 from datetime import datetime, date
-
+from DateBeforeCurrent import dateBeforeCurrentDate
 # Initial error checking of incorrect lines
 def initial_error_checking(gedcom_lines):
     for index, line in enumerate(gedcom_lines):
@@ -20,35 +20,45 @@ def initial_error_checking(gedcom_lines):
 # Error checking the individuals
 def individuals_error_checking(individual_list):
     #US02
-    birth_before_death(individual_list)
-    for individual in individual_list:
-        # [US07] - TaeSeo
-        if individual['Age'] != 'N/A':
-            assert(int(individual['Age']) < 150), "Individual is too old"
+    functions = [dateBeforeCurrentDate]
+    counter = 0
+    for function in functions:
+        try: function(individual_list): print("Success $function.__name__ ✅")
+        except AssertionError: 
+            print("$AssertionError.__name__ $function.__name__ ❌")
+            counter += 1
+    if counter == 0: print("All tests passed ✅")
+    else: print("$counter tests failed ❌")
 
-        # [US12] - Rocco 
-        if individual['Age'] != 'N/A' and individual['Children'] != []:
-            assert int(individual['Age']) < 150, "Individual is too old to be a parent"
+    # birth_before_death(individual_list)
+    # for individual in individual_list:
+    #     # [US07] - TaeSeo
+    #     if individual['Age'] != 'N/A':
+    #         assert(int(individual['Age']) < 150), "Individual is too old"
 
-        # [US10] - Rocco
-        if individual['Age'] != 'N/A' and individual['Spouse'] != 'N/A':
-            assert int(individual['Age']) >= 14, "Individual is too young to be married"
+    #     # [US12] - Rocco 
+    #     if individual['Age'] != 'N/A' and individual['Children'] != []:
+    #         assert int(individual['Age']) < 150, "Individual is too old to be a parent"
 
-        # [US01] - Justus
-        if individual['Birthday'] != 'N/A':
-            date = individual['Birthday'].split()
-            day, month, year = int(date[0]), int(
-                datetime.strptime(date[1], "%b").month), int(date[2])
-            curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
-            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Birth date is after today's date"
+    #     # [US10] - Rocco
+    #     if individual['Age'] != 'N/A' and individual['Spouse'] != 'N/A':
+    #         assert int(individual['Age']) >= 14, "Individual is too young to be married"
 
-        # [US01] - Justus
-        if individual['Death'] != 'N/A':
-            date = individual['Death'].split()
-            day, month, year = int(date[0]), int(
-                datetime.strptime(date[1], "%b").month), int(date[2])
-            curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
-            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Death date is after today's date"
+    #     # [US01] - Justus
+    #     if individual['Birthday'] != 'N/A':
+    #         date = individual['Birthday'].split()
+    #         day, month, year = int(date[0]), int(
+    #             datetime.strptime(date[1], "%b").month), int(date[2])
+    #         curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
+    #         assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Birth date is after today's date"
+
+    #     # [US01] - Justus
+    #     if individual['Death'] != 'N/A':
+    #         date = individual['Death'].split()
+    #         day, month, year = int(date[0]), int(
+    #             datetime.strptime(date[1], "%b").month), int(date[2])
+    #         curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
+    #         assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Death date is after today's date"
     
 
 # Error checking the families
