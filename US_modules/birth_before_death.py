@@ -1,3 +1,4 @@
+# Mateusz
 from datetime import datetime, date
 def birth_before_death(individual_list):
     for individual in individual_list:

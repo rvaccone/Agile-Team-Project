@@ -4,6 +4,7 @@ import unittest
 # Imported files
 from projectDictionaries import *
 import errorChecking as ec
+from US_modules.ageIsLessThan150 import ageIsLessThan150
 
 class IndividualTests(unittest.TestCase):
     # Initializing an empty list to contain all the individuals
@@ -40,45 +41,3 @@ class IndividualTests(unittest.TestCase):
             print(f"{function.__name__} Unit Test Success ✅")
         except AssertionError:
             print(f"Error: {AssertionError} on function {function.__name__} ❌")
-
-def checkIndividualNotTooOld():
-    individual = IndividualTests()
-    individual.create_individual(individual_dict)['Age'] = 200
-    try:
-        ec.individuals_error_checking(individual.get_individual_list())
-        print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
-    except:
-        print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
-
-    individual = IndividualTests()
-    individual.create_individual(individual_dict)['Age'] = 100
-    try:
-        ec.individuals_error_checking(individual.get_individual_list())
-        print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
-    except:
-        print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
-
-    individual = IndividualTests()
-    individual.create_individual(individual_dict)['Age'] = 70
-    try:
-        ec.individuals_error_checking(individual.get_individual_list())
-        print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
-    except:
-        print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
-
-    individual = IndividualTests()
-    individual.create_individual(individual_dict)['Age'] = 300
-    try:
-        ec.individuals_error_checking(individual.get_individual_list())
-        print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
-    except:
-        print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
-
-
-    individual = IndividualTests()
-    individual.create_individual(individual_dict)['Age'] = 10
-    try:
-        ec.individuals_error_checking(individual.get_individual_list())
-        print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
-    except:
-        print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
