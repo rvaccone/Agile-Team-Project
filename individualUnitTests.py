@@ -86,44 +86,44 @@ class IndividualTests(unittest.TestCase):
 
     def checkIndividualNotTooOld():
         individual = Individual()
+        individual.create_individual(individual_dict)['Age'] = 110
+        try:
+            ageIsLessThan150(individual.get_individual_list())
+            print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Age'] = 160
+        try:
+            ageIsLessThan150(individual.get_individual_list())
+            print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
+
+        individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 200
         try:
-            ec.individuals_error_checking(individual.get_individual_list())
+            ageIsLessThan150(individual.get_individual_list())
             print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
         individual = Individual()
-        individual.create_individual(individual_dict)['Age'] = 100
+        individual.create_individual(individual_dict)['Age'] = 30
         try:
-            ec.individuals_error_checking(individual.get_individual_list())
+            ageIsLessThan150(individual.get_individual_list())
             print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
         individual = Individual()
-        individual.create_individual(individual_dict)['Age'] = 70
+        individual.create_individual(individual_dict)['Age'] = 67
         try:
-            ec.individuals_error_checking(individual.get_individual_list())
-            print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
-
-        individual = Individual()
-        individual.create_individual(individual_dict)['Age'] = 300
-        try:
-            ec.individuals_error_checking(individual.get_individual_list())
+            ageIsLessThan150(individual.get_individual_list())
             print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
 
-        individual = Individual()
-        individual.create_individual(individual_dict)['Age'] = 10
-        try:
-            ec.individuals_error_checking(individual.get_individual_list())
-            print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
-
-unittest.main()
+IndividualTests.checkIndividualNotTooOld()
