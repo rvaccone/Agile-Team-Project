@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from DateBeforeCurrent import dateBeforeCurrentDate
+from ".US_modules/DateBeforeCurrent" import dateBeforeCurrentDate
 # Initial error checking of incorrect lines
 def initial_error_checking(gedcom_lines):
     for index, line in enumerate(gedcom_lines):
@@ -23,7 +23,9 @@ def individuals_error_checking(individual_list):
     functions = [dateBeforeCurrentDate]
     counter = 0
     for function in functions:
-        try: function(individual_list): print("Success $function.__name__ ✅")
+        try: 
+            function(individual_list)
+            print("Success $function.__name__ ✅")
         except AssertionError: 
             print("$AssertionError.__name__ $function.__name__ ❌")
             counter += 1
