@@ -172,4 +172,4 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
             
-IndividualTests.birth_before_death()
+#IndividualTests.birth_before_death()

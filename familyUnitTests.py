@@ -6,6 +6,8 @@ from projectDictionaries import *
 from individualUnitTests import *
 import errorChecking as ec
 from US_modules.DateBeforeCurrent import dateBeforeCurrentDate
+from US_modules.birth_before_marriage import birth_before_marriage
+
 
 class Family():
     # Initializing an empty list to contain all the families
@@ -85,4 +87,61 @@ class FamilyTests(unittest.TestCase):
             print('Individual birthday is after current date:' + str(individual.get_individual_list()[0]['Birthday']))
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
+        
+    def birth_before_marriage():
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2002'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        try:
+            birth_before_marriage(family.get_family_list(), individual.get_individual_list())
+            print('Individual birthday is after Marriage Date:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '3 DEC 2020' 
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        try:
+            birth_before_marriage(family.get_family_list(), individual.get_individual_list())
+            print('Individual birthday is after Marriage Date:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '3 AUG 2020' 
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 1990'
+        try:
+            birth_before_marriage(family.get_family_list(), individual.get_individual_list())
+            print('Individual birthday is after Marriage Date:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '30 JAN 2022'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '15 AUG 2010' 
+        try:
+            birth_before_marriage(family.get_family_list(), individual.get_individual_list())
+            print('Individual birthday is after Marriage Date:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 AUG 2010' 
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '10 FEB 1999'
+        try:
+            birth_before_marriage(family.get_family_list(), individual.get_individual_list())
+            print('Individual birthday is after Marriage Date:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))    
+
+FamilyTests.birth_before_marriage()
 
