@@ -1,3 +1,4 @@
+# [US07] - TaeSeo
 def ageIsLessThan150(individual_list):
     for individual in individual_list:
         if individual['Age'] != 'N/A':
