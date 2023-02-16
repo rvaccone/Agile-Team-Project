@@ -1,6 +1,6 @@
 #Mateusz
 import datetime
-def families_error_checking(family_list, individual_list):
+def birth_before_marriage(family_list, individual_list):
     
      for family in family_list:
         # [US03] - Mateusz

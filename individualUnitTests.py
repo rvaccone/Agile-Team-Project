@@ -44,7 +44,48 @@ class Individual():
             print(f"Error: {AssertionError} on function {function.__name__} ❌")
 
 class IndividualTests(unittest.TestCase):
-    def checkIndividualNotTooOld(self):
+    def checkDatesBeforeCurrent():
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2025'
+        try:
+            ec.individuals_error_checking(individual.get_individual_list())
+            print('Individual birthday is after current date:' + str(individual.get_individual_list()[0]['Birthday']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '2 JAN 2020'
+        try:
+            ec.individuals_error_checking(individual.get_individual_list())
+            print('Individual death date is after current date:' + str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Death']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '20 DEC 2024'
+        try:
+            ec.individuals_error_checking(individual.get_individual_list())
+            print('Individual death date is after current date:' + str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Death']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
+        try:
+            ec.individuals_error_checking(individual.get_individual_list())
+            print('Individual birthday is after current date:' + str(individual.get_individual_list()[0]['Birthday']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 MAR 2023'
+        try:
+            ec.individuals_error_checking(individual.get_individual_list())
+            print('Individual birthday is after current date:' + str(individual.get_individual_list()[0]['Birthday']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
+
+    def checkIndividualNotTooOld():
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 110
         try:
@@ -85,6 +126,7 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
+    def birth_before_death():
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
         individual.get_individual_list()[0]['Death'] = '16 JUL 1992'
@@ -95,52 +137,39 @@ class IndividualTests(unittest.TestCase):
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
 
         individual = Individual()
-        individual.create_individual(individual_dict)['Age'] = 84
-        individual.get_individual_list()[0]['Children'] = ['@I2@', '@I3@']
+        individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
+        individual.get_individual_list()[0]['Death'] = '16 MAR 2002'
         try:
-            us.Parents_not_too_old(individual.get_individual_list())
-            print('Correctly passed with age:' + str(individual.get_individual_list()[0]['Age']))
-        except AssertionError:
-            print('Incorrectly submitted an error of: ')
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '16 MAR 2002'
+        individual.get_individual_list()[0]['Death'] = '15 JUL 1990'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
         
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 MAR 2002'
         individual.get_individual_list()[0]['Death'] = '17 MAR 2002'
         try:
-            assert (individual.get_individual_list()[0]['Age'] < 150), 'Error: Individual is too old to be a parent'
-        except AssertionError:
-            print('Unsuccessfully errored with:')
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
 
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '31 AUG 2005'
         individual.get_individual_list()[0]['Death'] = '30 AUG 2005'
         try:
-            us.Parents_not_too_old(individual.get_individual_list())
-            print('Individual is not too old to be a parent:' + str(individual.get_individual_list()[0]['Age']))
-        except AssertionError:
-            print('Failed successfully with error:')
-        
-        try:
-            assert (individual.get_individual_list()[0]['Age'] < 150), 'Error: Individual is too old to be a parent'
-        except AssertionError:
-            print('Successfully errored with:' )
-
-        try:
-            assert (individual.get_individual_list()[0]['Age'] == 200), 'Error: Individual is too old to be a parent'
-        except AssertionError:
-            print('Ages do not align:')
-
-# def outputTestResults(function):
-#     with open('./output.txt', 'w') as f:
-#         sys.stdout = open("./output.txt", "w")
-#         try:
-#             function()
-#             f.write(f"{function.__name__} Unit Test Success ✅\n")
-#         except AssertionError:
-#             f.write(f"Error: {AssertionError} on function {function.__name__} ❌\n")
-
-# individual_tests = IndividualTests()
-# outputTestResults(individual_tests.checkIndividualNotTooOld)
-
-if __name__ == '__main__':
-    unittest.main()
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+            
+#IndividualTests.birth_before_death()
