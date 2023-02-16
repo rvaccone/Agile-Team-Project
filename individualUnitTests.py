@@ -5,6 +5,7 @@ import unittest
 from projectDictionaries import *
 import errorChecking as ec
 from US_modules.ageIsLessThan150 import ageIsLessThan150
+from US_modules.birth_before_death import birth_before_death
 
 class Individual():
     # Initializing an empty list to contain all the individuals
@@ -125,5 +126,50 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
+    def birth_before_death():
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
+        individual.get_individual_list()[0]['Death'] = '16 JUL 1992'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
 
-IndividualTests.checkIndividualNotTooOld()
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
+        individual.get_individual_list()[0]['Death'] = '16 MAR 2002'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '16 MAR 2002'
+        individual.get_individual_list()[0]['Death'] = '15 JUL 1990'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 MAR 2002'
+        individual.get_individual_list()[0]['Death'] = '17 MAR 2002'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '31 AUG 2005'
+        individual.get_individual_list()[0]['Death'] = '30 AUG 2005'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+            
+IndividualTests.birth_before_death()
