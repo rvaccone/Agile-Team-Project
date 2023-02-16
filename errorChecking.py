@@ -90,11 +90,11 @@ def families_error_checking(family_list, individual_list):
         # [US01] - Justus
         if family['Marriage Date'] != 'N/A':
             date = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
-            curDate = datetime.now()
+            curDate = datetime.now().date()
             assert(date < curDate), "Marriage date is after today's date"
         if family['Divorce Date'] != 'N/A':
             date = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
-            curDate = datetime.now()
+            curDate = datetime.now().date()
             assert(date < curDate), "Divorce date is after today's date"
 
 #Mateusz USER STORY 02

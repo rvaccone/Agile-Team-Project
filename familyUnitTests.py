@@ -3,7 +3,7 @@ import unittest
 
 # Imported files
 from projectDictionaries import *
-from individualUnitTesting import *
+from individualUnitTests import *
 import errorChecking as ec
 
 class FamilyTests(unittest.TestCase):
@@ -20,5 +20,3 @@ class FamilyTests(unittest.TestCase):
     # Creating a function to return the list of families
     def get_family_list(self):
         return self.family_list
-
-

@@ -61,11 +61,3 @@ def checkIndividualNotTooOld():
         print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
     except:
         print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
-    
-
-
-checkIndividualNotTooOld()
-
-
-
-

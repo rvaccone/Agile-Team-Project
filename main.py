@@ -4,8 +4,6 @@ from datetime import datetime, date
 
 # Imported files
 import errorChecking as ec
-import individualUnitTests as iut
-import familyUnitTests as fut
 from projectDictionaries import *
 
 # Open the test_gedcom.ged file as a read-only
