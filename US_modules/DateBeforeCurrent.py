@@ -17,11 +17,11 @@ def dateBeforeCurrentDate (individual_list,family_list):
     for family in family_list:
         if family['Marriage Date'] != 'N/A':
             date = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
-            curDate = datetime.now()
+            curDate = datetime.now().date()
             assert(date < curDate), "Marriage date is after today's date"
         if family['Divorce Date'] != 'N/A':
             date = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
-            curDate = datetime.now()
+            curDate = datetime.now().date()
             assert(date < curDate), "Divorce date is after today's date"
 
 

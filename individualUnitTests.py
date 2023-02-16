@@ -46,7 +46,7 @@ class Individual():
             print(f"Error: {AssertionError} on function {function.__name__} ❌")
 
 class IndividualTests(unittest.TestCase):
-    def checkIndividualNotTooOld():
+    def checkIndividualNotTooOld(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 110
         try:
@@ -87,10 +87,6 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
-<<<<<<< Updated upstream
-
-IndividualTests.checkIndividualNotTooOld()
-=======
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 10
         try:
@@ -102,34 +98,34 @@ IndividualTests.checkIndividualNotTooOld()
     def checkParentTooOld():
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 84
-        individual.get_individual_list()[0]['Childred'] = ['@I2@', '@I3@']
+        individual.get_individual_list()[0]['Children'] = ['@I2@', '@I3@']
         try:
             us.Parents_not_too_old(individual.get_individual_list())
             print('Correctly passed with age:' + str(individual.get_individual_list()[0]['Age']))
         except AssertionError:
-            print('Incorrectly submitted an error of: ' + AssertionError())
+            print('Incorrectly submitted an error of: ')
         
         try:
             assert (individual.get_individual_list()[0]['Age'] < 150), 'Error: Individual is too old to be a parent'
         except AssertionError:
-            print('Unsuccessfully errored with:' + AssertionError())
+            print('Unsuccessfully errored with:')
 
         individual.get_individual_list()[0]['Age'] = 200
         try:
             us.Parents_not_too_old(individual.get_individual_list())
             print('Individual is not too old to be a parent:' + str(individual.get_individual_list()[0]['Age']))
         except AssertionError:
-            print('Failed successfully with error:' + AssertionError())
+            print('Failed successfully with error:')
         
         try:
             assert (individual.get_individual_list()[0]['Age'] < 150), 'Error: Individual is too old to be a parent'
         except AssertionError:
-            print('Successfully errored with:' + AssertionError())
+            print('Successfully errored with:' )
 
         try:
             assert (individual.get_individual_list()[0]['Age'] == 200), 'Error: Individual is too old to be a parent'
         except AssertionError:
-            print('Ages do not align:' + AssertionError())
+            print('Ages do not align:')
 
 # def outputTestResults(function):
 #     with open('./output.txt', 'w') as f:
@@ -145,4 +141,3 @@ IndividualTests.checkIndividualNotTooOld()
 
 if __name__ == '__main__':
     unittest.main()
->>>>>>> Stashed changes
