@@ -1,7 +1,7 @@
 # [US11] - Phillip
 from datetime import datetime, date
 
-def noBigamy(family_list):
+def noBigamy(family_list, individual_list):
     def stringToDate(date):
         date = date.split()
         day, month, year = int(date[0]), int(
