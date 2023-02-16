@@ -8,6 +8,7 @@ import errorChecking as ec
 from US_modules.DateBeforeCurrent import dateBeforeCurrentDate
 from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
 from US_modules.divorceBeforeDeath import divorceBeforeDeath
+from US_modules.birth_before_marriage import birth_before_marriage
 
 class Family():
     # Initializing an empty list to contain all the families
