@@ -1,13 +1,11 @@
 # Imported packages
 import unittest
-import sys
 
 # Imported files
 from projectDictionaries import *
 import errorChecking as ec
-import US_modules as us
 from US_modules.ageIsLessThan150 import ageIsLessThan150
-
+from US_modules.birth_before_death import birth_before_death
 
 class Individual():
     # Initializing an empty list to contain all the individuals
@@ -88,14 +86,14 @@ class IndividualTests(unittest.TestCase):
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
         individual = Individual()
-        individual.create_individual(individual_dict)['Age'] = 10
+        individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
+        individual.get_individual_list()[0]['Death'] = '16 JUL 1992'
         try:
-            ec.individuals_error_checking(individual.get_individual_list())
-            print('Individual is not too old:' + str(individual.get_individual_list()[0]['Age']))
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
         except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
 
-    def checkParentTooOld():
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 84
         individual.get_individual_list()[0]['Children'] = ['@I2@', '@I3@']
@@ -105,12 +103,17 @@ class IndividualTests(unittest.TestCase):
         except AssertionError:
             print('Incorrectly submitted an error of: ')
         
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 MAR 2002'
+        individual.get_individual_list()[0]['Death'] = '17 MAR 2002'
         try:
             assert (individual.get_individual_list()[0]['Age'] < 150), 'Error: Individual is too old to be a parent'
         except AssertionError:
             print('Unsuccessfully errored with:')
 
-        individual.get_individual_list()[0]['Age'] = 200
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '31 AUG 2005'
+        individual.get_individual_list()[0]['Death'] = '30 AUG 2005'
         try:
             us.Parents_not_too_old(individual.get_individual_list())
             print('Individual is not too old to be a parent:' + str(individual.get_individual_list()[0]['Age']))
