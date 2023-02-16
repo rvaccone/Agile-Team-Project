@@ -19,6 +19,27 @@ class IndividualTests(unittest.TestCase):
     # Creating a function to return the list of individuals
     def get_individual_list(self):
         return self.individual_list
+        
+    def create_test_individuals(self, attribute, value, function):
+        individual = IndividualTests() 
+        test_individual = {
+            "ID": "I",
+            "Name": "Richard /Ens/",
+            "Sex": "M",
+            "Birthday": "1 JAN 2000",
+            "Age": "40",
+            "Alive": True,
+            "Death": "N/A",
+            "Family": "F1",
+            "Spouse": "I2",
+            "Children": []
+        }[attribute] = value
+        assert len(individual_dict) == len(test_individual), 'Error: dictionary length of test individual does not match original individual dictionary'
+        try: 
+            function(individual.get_individual_list())
+            print(f"{function.__name__} Unit Test Success ✅")
+        except AssertionError:
+            print(f"Error: {AssertionError} on function {function.__name__} ❌")
 
 def checkIndividualNotTooOld():
     individual = IndividualTests()
