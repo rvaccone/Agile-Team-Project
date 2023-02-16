@@ -5,6 +5,7 @@ import unittest
 from projectDictionaries import *
 from individualUnitTests import *
 import errorChecking as ec
+>>>>>>> 04b7f61c36e15184f61b74e427ac5e3efe5eb713
 
 class FamilyTests(unittest.TestCase):
     # Initializing an empty list to contain all the families
