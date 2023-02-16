@@ -32,7 +32,7 @@ individual_functions = [
 
 # Error checking the individuals
 def individuals_error_checking(individual_list):
-    print('-'*50, 'Starting individual error checking', '-'*50)
+    print('-'*50, 'Starting Individual Error Checking', '-'*50)
     counter = 0
     for function in individual_functions:
         try: 
@@ -45,10 +45,12 @@ def individuals_error_checking(individual_list):
     else: print(f"{counter} tests failed ❌")
 
 # List of family functions
-family_functions = []
+family_functions = [
+    
+]
 
 def families_error_checking(individual_list, family_list):
-    print('-'*50, 'Starting family error checking', '-'*50)
+    print('-'*50, 'Starting Family Error Checking', '-'*50)
     counter = 0
     for function in family_functions:
         try:
