@@ -1,4 +1,4 @@
-#[US06] - TaeSeo Um
+#[US06] - TaeSeo
 import datetime 
 
 def divorceBeforeDeath(family_list, individual_list):
