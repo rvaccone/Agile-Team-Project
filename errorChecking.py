@@ -5,6 +5,8 @@ from datetime import datetime, date
 from US_modules.DateBeforeCurrent import dateBeforeCurrentDate
 from US_modules.Parents_not_too_old import parents_not_too_old
 from US_modules.individual_is_too_young_to_be_married import individual_is_too_young_to_be_married
+from US_modules.ageIsLessThan150 import ageIsLessThan150
+from US_modules.divorceBeforeDeath import divorceBeforeDeath
 
 # Initial error checking of incorrect lines
 def initial_error_checking(gedcom_lines):
@@ -27,7 +29,8 @@ def initial_error_checking(gedcom_lines):
 individual_functions = [
     dateBeforeCurrentDate,
     parents_not_too_old,
-    individual_is_too_young_to_be_married
+    individual_is_too_young_to_be_married,
+    ageIsLessThan150
 ]
 
 # Error checking the individuals
@@ -46,7 +49,7 @@ def individuals_error_checking(individual_list):
 
 # List of family functions
 family_functions = [
-    
+    divorceBeforeDeath
 ]
 
 def families_error_checking(individual_list, family_list):
