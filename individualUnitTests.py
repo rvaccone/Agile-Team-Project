@@ -41,3 +41,5 @@ class IndividualTests(unittest.TestCase):
             print(f"{function.__name__} Unit Test Success ✅")
         except AssertionError:
             print(f"Error: {AssertionError} on function {function.__name__} ❌")
+
+
