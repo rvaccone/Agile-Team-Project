@@ -6,8 +6,9 @@ from projectDictionaries import *
 from individualUnitTests import *
 import errorChecking as ec
 from US_modules.DateBeforeCurrent import dateBeforeCurrentDate
-from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
+from US_modules.MarriageBeforeDivorce import MarriageBeforeDivorce
 from US_modules.divorceBeforeDeath import divorceBeforeDeath
+from US_modules.NoBigamy import noBigamy
 
 class Family():
     # Initializing an empty list to contain all the families
@@ -96,52 +97,52 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print('Failed successfully with error:' )
 
-    def checkMarriageBeforeDivorce():
+    def checkMarriageBeforeDivorce(self):
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
-        family['Divorced'] = '1 JAN 1990'
+        family.get_family_list()[0]['Divorce Date'] = '1 JAN 1990'
         #test 1
         try:
-            marriageBeforeDivorce(family.get_family_list())
-            print(f"Marriage date is after divorce date: {str(family.get_family_list()[0]['Married'])} ❌")
+            MarriageBeforeDivorce(family.get_family_list(), [])
+            print(f"Didn't detect Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         except:
-            print(f"Failed successfully with error {str(family.get_family_list()[0]['Married'])} ✅") 
+            print(f"Failed successfully with error, Marriage Date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])}✅") 
         #test 2
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
         family.get_family_list()[0]['Divorce Date'] = 'N/A'
         try:
-            marriageBeforeDivorce(family.get_family_list())
-            print(f"Marriage date is before divorce date: {str(family.get_family_list()[0]['Married'])} ✅")
+            MarriageBeforeDivorce(family.get_family_list(), [])
+            print(f"Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is before divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ✅")
         except:
-            print(f"Failed with error {str(family.get_family_list()[0]['Married'])} ❌")
+            print(f"Failed with error, Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is before divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         #test 3
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '6 JAN 2010'
         family.get_family_list()[0]['Divorce Date'] = '1 JAN 2000'
         try:
-            marriageBeforeDivorce(family.get_family_list())
-            print(f"Marriage date is before divorce date: {str(family.get_family_list()[0]['Married'])} ✅")
+            MarriageBeforeDivorce(family.get_family_list(), [])
+            print(f"Didn't detect Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         except:
-            print(f"Failed with error {str(family.get_family_list()[0]['Married'])} ❌")
+            print(f"Failed successfully with error, Marriage Date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])}✅") 
         #test 4
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '18 JAN 2013'
         family.get_family_list()[0]['Divorce Date'] = '19 AUG 2000'
         try:
-            marriageBeforeDivorce(family.get_family_list())
-            print(f"Marriage date is after divorce date: {str(family.get_family_list()[0]['Married'])} ❌")
+            MarriageBeforeDivorce(family.get_family_list(), [])
+            print(f"Didn't detect Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         except:
-            print(f"Failed successfully with error {str(family.get_family_list()[0]['Married'])} ✅")
+            print(f"Failed successfully with error, Marriage Date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])}✅") 
         #test 5
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
         family.get_family_list()[0]['Divorce Date'] = '28 DEC 1999'
         try:
-            marriageBeforeDivorce(family.get_family_list())
-            print(f"Marriage date is after divorce date: {str(family.get_family_list()[0]['Married'])} ❌")
+            MarriageBeforeDivorce(family.get_family_list(), [])
+            print(f"Didn't detect Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         except:
-            print(f"Failed successfully with error {str(family.get_family_list()[0]['Married'])} ✅")
+            print(f"Failed successfully with error, Marriage Date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])}✅") 
 
         
 
@@ -262,8 +263,92 @@ class FamilyTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))    
 
+    def checkBigamy(self):
+        #test1
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '13 JAN 2000'
+        family.get_family_list()[0]['Divorce Date'] = '6 JAN 2001'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+
+        family.create_family(family_dict)['Marriage Date'] = '13 JUN 2002'
+        family.get_family_list()[1]['Divorce Date'] = 'N/A'
+        family.get_family_list()[1]['Husband ID'] = 'I1'
+        family.get_family_list()[1]['Wife ID'] = 'I3'
+        try:
+            noBigamy(Family.get_family_list(), [])
+            print(f"Bigamy is not present: {str(family.get_family_list())} ✅")
+        except:
+            print(f"Failed with error {str(family.get_family_list())} ❌")
+        
+        #test2
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '13 JAN 2000'
+        family.get_family_list()[0]['Divorce Date'] = '6 JAN 2001'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.create_family(family_dict)['Marriage Date'] = '23 DEC 2000'
+        family.get_family_list()[1]['Divorce Date'] = 'N/A'
+        family.get_family_list()[1]['Husband ID'] = 'I1'
+        family.get_family_list()[1]['Wife ID'] = 'I3'
+        try:
+            noBigamy(Family.get_family_list(), [])
+            print(f"Bigamy went undetected: {str(family.get_family_list())} ❌")
+        except:
+            print(f"Failed successfully with error {str(family.get_family_list())} ✅")
+        
+        #test3
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '13 JAN 2000'
+        family.get_family_list()[0]['Divorce Date'] = '6 JAN 2001'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.create_family(family_dict)['Marriage Date'] = '23 OCT 1998'
+        family.get_family_list()[1]['Divorce Date'] = 'N/A'
+        family.get_family_list()[1]['Husband ID'] = 'I3'
+        family.get_family_list()[1]['Wife ID'] = 'I4'
+        try:
+            noBigamy(Family.get_family_list(), [])
+            print(f"Bigamy is not present: {str(family.get_family_list())} ✅")
+        except:
+            print(f"Failed with error {str(family.get_family_list())} ❌")
+        
+        #test4
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '13 JAN 2000'
+        family.get_family_list()[0]['Divorce Date'] = '6 JAN 2001'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+
+        family.create_family(family_dict)['Marriage Date'] = '13 JUN 2002'
+        family.get_family_list()[1]['Divorce Date'] = 'N/A'
+        family.get_family_list()[1]['Husband ID'] = 'I3'
+        family.get_family_list()[1]['Wife ID'] = 'I1'
+        try:
+            noBigamy(Family.get_family_list(), [])
+            print(f"Bigamy is not present: {str(family.get_family_list())} ✅")
+        except:
+            print(f"Failed with error {str(family.get_family_list())} ❌")
+
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '13 JAN 2000'
+        family.get_family_list()[0]['Divorce Date'] = '6 JAN 2001'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.create_family(family_dict)['Marriage Date'] = '23 DEC 2000'
+        family.get_family_list()[1]['Divorce Date'] = 'N/A'
+        family.get_family_list()[1]['Husband ID'] = 'I3'
+        family.get_family_list()[1]['Wife ID'] = 'I1'
+        try:
+            noBigamy(Family.get_family_list(), [])
+            print(f"Bigamy went undetected: {str(family.get_family_list())} ❌")
+        except:
+            print(f"Failed successfully with error {str(family.get_family_list())} ✅")
+        
+
+
 
 runner = unittest.TextTestRunner()
-runner.run(FamilyTests('checkDivorceBeforeDeath'))
+runner.run(FamilyTests('checkBigamy'))
         
     
