@@ -6,8 +6,8 @@ from projectDictionaries import *
 from individualUnitTests import *
 import errorChecking as ec
 from US_modules.DateBeforeCurrent import dateBeforeCurrentDate
-from US_modules.birth_before_marriage import birth_before_marriage
-
+from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
+from US_modules.divorceBeforeDeath import divorceBeforeDeath
 
 class Family():
     # Initializing an empty list to contain all the families
@@ -24,8 +24,8 @@ class Family():
         family = FamilyTests() 
         test_family = {
             "ID": "F",
-            "Married": "1 JAN 2000",
-            "Divorced": "N/A",
+            "Marriage Date": "1 JAN 2000",
+            "Divorce Date": "N/A",
             "Husband ID": "I1",
             "Husband Name": "Richard /Ens/",
             "Wife ID": "I2",
@@ -45,49 +45,168 @@ class Family():
 
 
 class FamilyTests(unittest.TestCase):
-    def checkDatesBeforeCurrent():
+    def checkDatesBeforeCurrent(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2025'
         family = Family()
         family.create_family(family_dict)['Marriage Date'] = '3 DEC 2010'
         try:
             dateBeforeCurrentDate(individual.get_individual_list(), family.get_family_list())
-            print('Individual birthday is after current date:' + str(individual.get_individual_list()[0]['Birthday']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
+            print('Individual birthday is before current date:' + str(individual.get_individual_list()[0]['Birthday']))
+        except AssertionError:
+            print('Failed successfully with error:'  )
 
         individual = Individual()
-        individual.create_individual(individual_dict)['Death'] = '2 JAN 2020'
+        individual.create_individual(individual_dict)['Birthday'] = '1 JAN 1990'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '3 DEC 2030'
         try:
-            ec.individuals_error_checking(individual.get_individual_list())
-            print('Individual death date is after current date:' + str(individual.get_individual_list()[0]['Death']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Death']) )
+            dateBeforeCurrentDate(individual.get_individual_list(), family.get_family_list())
+            print('Marriage date is before current date:' + str(family.get_family_list()[0]['Marriage Date']))
+        except AssertionError:
+            print('Failed successfully with error:'  )
 
         individual = Individual()
-        individual.create_individual(individual_dict)['Death'] = '20 DEC 2024'
+        individual.create_individual(individual_dict)['Birthday'] = '1 JAN 1990'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '3 DEC 2010'
         try:
-            ec.individuals_error_checking(individual.get_individual_list())
-            print('Individual death date is after current date:' + str(individual.get_individual_list()[0]['Death']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Death']) )
+            dateBeforeCurrentDate(individual.get_individual_list(), family.get_family_list())
+            print('Marriage and birth date is before current date:' + str(family.get_family_list()[0]['Marriage Date']))
+        except AssertionError:
+            print('Failed successfully with error:'  )
 
         individual = Individual()
-        individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
+        individual.create_individual(individual_dict)['Death'] = '1 JAN 2050'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '3 DEC 2010'
         try:
-            ec.individuals_error_checking(individual.get_individual_list())
-            print('Individual birthday is after current date:' + str(individual.get_individual_list()[0]['Birthday']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
-
-        individual = Individual()
-        individual.create_individual(individual_dict)['Birthday'] = '15 MAR 2023'
-        try:
-            ec.individuals_error_checking(individual.get_individual_list())
-            print('Individual birthday is after current date:' + str(individual.get_individual_list()[0]['Birthday']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
+            dateBeforeCurrentDate(individual.get_individual_list(), family.get_family_list())
+            print('Marriage and death date is before current date:' + str(family.get_family_list()[0]['Marriage Date']))
+        except AssertionError:
+            print('Failed successfully with error:' )
         
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2050'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '3 DEC 2030'
+        try:
+            dateBeforeCurrentDate(individual.get_individual_list(), family.get_family_list())
+            print('Marriage date is before current date:' + str(family.get_family_list()[0]['Marriage Date']))
+        except AssertionError:
+            print('Failed successfully with error:' )
+
+    def checkMarriageBeforeDivorce():
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
+        family['Divorced'] = '1 JAN 1990'
+        #test 1
+        try:
+            marriageBeforeDivorce(family.get_family_list())
+            print(f"Marriage date is after divorce date: {str(family.get_family_list()[0]['Married'])} ❌")
+        except:
+            print(f"Failed successfully with error {str(family.get_family_list()[0]['Married'])} ✅") 
+        #test 2
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
+        family.get_family_list()[0]['Divorce Date'] = 'N/A'
+        try:
+            marriageBeforeDivorce(family.get_family_list())
+            print(f"Marriage date is before divorce date: {str(family.get_family_list()[0]['Married'])} ✅")
+        except:
+            print(f"Failed with error {str(family.get_family_list()[0]['Married'])} ❌")
+        #test 3
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '6 JAN 2010'
+        family.get_family_list()[0]['Divorce Date'] = '1 JAN 2000'
+        try:
+            marriageBeforeDivorce(family.get_family_list())
+            print(f"Marriage date is before divorce date: {str(family.get_family_list()[0]['Married'])} ✅")
+        except:
+            print(f"Failed with error {str(family.get_family_list()[0]['Married'])} ❌")
+        #test 4
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '18 JAN 2013'
+        family.get_family_list()[0]['Divorce Date'] = '19 AUG 2000'
+        try:
+            marriageBeforeDivorce(family.get_family_list())
+            print(f"Marriage date is after divorce date: {str(family.get_family_list()[0]['Married'])} ❌")
+        except:
+            print(f"Failed successfully with error {str(family.get_family_list()[0]['Married'])} ✅")
+        #test 5
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
+        family.get_family_list()[0]['Divorce Date'] = '28 DEC 1999'
+        try:
+            marriageBeforeDivorce(family.get_family_list())
+            print(f"Marriage date is after divorce date: {str(family.get_family_list()[0]['Married'])} ❌")
+        except:
+            print(f"Failed successfully with error {str(family.get_family_list()[0]['Married'])} ✅")
+
+        
+
+    def checkDivorceBeforeDeath(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '1 JAN 2005'
+        individual.get_individual_list()[0]['ID'] = "I1"
+        family = Family()
+        family.create_family(family_dict)['Divorce Date'] = '3 DEC 2010'
+        family.get_family_list()[0]['Husband ID'] = "I1"
+        try:
+            divorceBeforeDeath(individual.get_individual_list(), family.get_family_list())
+            print('Divorce date is before death date: ' + str(family.get_family_list()[0]['Divorce Date']))
+        except:
+            print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '1 JAN 2010'
+        individual.get_individual_list()[0]['ID'] = "I1"
+        family = Family()
+        family.create_family(family_dict)['Divorce Date'] = '3 DEC 2050'
+        family.get_family_list()[0]['Husband ID'] = "I1"
+        try:
+            divorceBeforeDeath(individual.get_individual_list(), family.get_family_list())
+            print('Divorce date is before death date: ' + str(family.get_family_list()[0]['Divorce Date']))
+        except:
+            print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '1 JAN 2019'
+        individual.get_individual_list()[0]['ID'] = "I1"
+        family = Family()
+        family.create_family(family_dict)['Divorce Date'] = '3 DEC 2052'
+        family.get_family_list()[0]['Husband ID'] = "I1"
+        try:
+            divorceBeforeDeath(individual.get_individual_list(), family.get_family_list())
+            print('Divorce date is before death date: ' + str(family.get_family_list()[0]['Divorce Date']))
+        except:
+            print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '1 JAN 2000'
+        individual.get_individual_list()[0]['ID'] = "I1"
+        family = Family()
+        family.create_family(family_dict)['Divorce Date'] = '3 DEC 2053'
+        family.get_family_list()[0]['Husband ID'] = "I1"
+        try:
+            divorceBeforeDeath(individual.get_individual_list(), family.get_family_list())
+            print('Divorce date is before death date: ' + str(family.get_family_list()[0]['Divorce Date']))
+        except:
+            print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '1 JAN 2008'
+        individual.get_individual_list()[0]['ID'] = "I1"
+        family = Family()
+        family.create_family(family_dict)['Divorce Date'] = '3 DEC 2009'
+        family.get_family_list()[0]['Husband ID'] = "I1"
+        try:
+            divorceBeforeDeath(individual.get_individual_list(), family.get_family_list())
+            print('Divorce date is before death date: ' + str(family.get_family_list()[0]['Divorce Date']))
+        except:
+            print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
+
+
     def birth_before_marriage():
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
@@ -143,5 +262,8 @@ class FamilyTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))    
 
-FamilyTests.birth_before_marriage()
 
+runner = unittest.TextTestRunner()
+runner.run(FamilyTests('checkDivorceBeforeDeath'))
+        
+    
