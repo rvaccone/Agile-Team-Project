@@ -83,7 +83,7 @@ def families_error_checking(individual_list, family_list):
     #             datetime.strptime(date[1], "%b").month), int(date[2])
     #         curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
     #         assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Death date is after today's date"
-    
+
 
 # # Error checking the families
 # def families_error_checking(family_list, individual_list):
