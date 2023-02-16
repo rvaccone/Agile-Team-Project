@@ -8,6 +8,12 @@ def dateBeforeCurrentDate (individual_list,family_list):
                 datetime.strptime(date[1], "%b").month), int(date[2])
             curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
             assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Birth date is after today's date"
+        if individual['Death'] != 'N/A':
+            date = individual['Death'].split()
+            day, month, year = int(date[0]), int(
+                datetime.strptime(date[1], "%b").month), int(date[2])
+            curDay, curMonth, curYear = datetime.today().day, datetime.today().month, datetime.today().year
+            assert(curYear > year or (year == curYear and curMonth > month) or (year == curYear and curMonth == month and day < curDay)), "Death date is after today's date"
     for family in family_list:
         if family['Marriage Date'] != 'N/A':
             date = datetime.strptime(family['Marriage Date'], '%d %b %Y').date()
@@ -17,3 +23,5 @@ def dateBeforeCurrentDate (individual_list,family_list):
             date = datetime.strptime(family['Divorce Date'], '%d %b %Y').date()
             curDate = datetime.now()
             assert(date < curDate), "Divorce date is after today's date"
+
+
