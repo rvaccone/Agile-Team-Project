@@ -3,6 +3,8 @@ from datetime import datetime, date
 
 def noBigamy(family_list, individual_list):
     def stringToDate(date):
+        if date=='N/A':
+            return datetime.now().date()
         date = date.split()
         day, month, year = int(date[0]), int(
             datetime.strptime(date[1], "%b").month), int(date[2])
