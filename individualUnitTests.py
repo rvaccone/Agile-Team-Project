@@ -1,11 +1,12 @@
 # Imported packages
 import unittest
+import sys
 
 # Imported files
 from projectDictionaries import *
-import errorChecking as ec
 from US_modules.ageIsLessThan150 import ageIsLessThan150
 from US_modules.birth_before_death import birth_before_death
+from US_modules.Parents_not_too_old import parents_not_too_old
 
 class Individual():
     # Initializing an empty list to contain all the individuals
@@ -44,7 +45,7 @@ class Individual():
             print(f"Error: {AssertionError} on function {function.__name__} ❌")
 
 class IndividualTests(unittest.TestCase):
-    def checkDatesBeforeCurrent():
+    def test_checkDatesBeforeCurrent():
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2025'
         try:
@@ -85,7 +86,8 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
 
-    def checkIndividualNotTooOld():
+    def test_checkIndividualNotTooOld():
+
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 110
         try:
@@ -126,7 +128,7 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
-    def birth_before_death():
+    def test_birth_before_death():
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
         individual.get_individual_list()[0]['Death'] = '16 JUL 1992'
@@ -136,40 +138,54 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
 
+    def test_checkParentsNotTooOld(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
         individual.get_individual_list()[0]['Death'] = '16 MAR 2002'
         try:
-            birth_before_death(individual.get_individual_list())
-            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
-
-        individual = Individual()
-        individual.create_individual(individual_dict)['Birthday'] = '16 MAR 2002'
-        individual.get_individual_list()[0]['Death'] = '15 JUL 1990'
-        try:
-            birth_before_death(individual.get_individual_list())
-            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+            parents_not_too_old(individual.get_individual_list())
+            print('Correctly passed with age:' + str(individual.get_individual_list()[0]['Age']))
+        except AssertionError:
+            print('Incorrectly submitted an error of: ')
         
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 MAR 2002'
         individual.get_individual_list()[0]['Death'] = '17 MAR 2002'
         try:
-            birth_before_death(individual.get_individual_list())
-            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+            if individual.get_individual_list()[0]['Age'] != 'N/A':
+                self.assertTrue(int(individual.get_individual_list()[0]['Age']) < 150, 'Error: Individual is too old to be a parent')
+            else:
+                self.assertTrue(False, 'Individual age is undefined')
+        except AssertionError:
+            print('Unsuccessfully errored with:')
 
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '31 AUG 2005'
         individual.get_individual_list()[0]['Death'] = '30 AUG 2005'
         try:
-            birth_before_death(individual.get_individual_list())
-            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
-        except:
-            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
-            
-IndividualTests.checkIndividualNotTooOld()
+            parents_not_too_old(individual.get_individual_list())
+            print('Individual is not too old to be a parent:' + str(individual.get_individual_list()[0]['Age']))
+        except AssertionError:
+            print('Failed successfully with error:')
+        
+        try:
+            if individual.get_individual_list()[0]['Age'] != 'N/A':
+                self.assertTrue(int(individual.get_individual_list()[0]['Age']) < 150, 'Error: Individual is too old to be a parent')
+            else:
+                self.assertTrue(False, 'Individual age is undefined')
+        except AssertionError:
+            print('Successfully errored with:' )
+
+        try:
+            self.assertTrue(individual.get_individual_list()[0]['Age'] == 200, 'Error: Individual is too old to be a parent')
+        except AssertionError:
+            print('Ages do not align:')
+
+def main(out = sys.stderr, verbosity = 2):
+    loader = unittest.TestLoader()
+    suite = loader.loadTestsFromModule(sys.modules[__name__])
+    unittest.TextTestRunner(out, verbosity = verbosity).run(suite)
+
+if __name__ == '__main__':
+    with open('./individual_tests.out' , 'w') as f:
+        main(f)
