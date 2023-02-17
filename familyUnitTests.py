@@ -1,6 +1,7 @@
 # Imported packages
 import unittest
 import sys
+
 # Imported files
 from projectDictionaries import *
 from individualUnitTests import *
@@ -9,7 +10,7 @@ from US_modules.MarriageBeforeDivorce import MarriageBeforeDivorce
 from US_modules.divorceBeforeDeath import divorceBeforeDeath
 from US_modules.NoBigamy import noBigamy
 from US_modules.birth_before_marriage import birth_before_marriage
-from US_modules.MarriageBeforeDivorce import MarriageBeforeDivorce
+from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
 from US_modules.NoBigamy import noBigamy
 
 class Family():
@@ -160,7 +161,6 @@ class FamilyTests(unittest.TestCase):
         except:
             print('Failed successfully with error: Marriage is after death, Married: ' + str(family.get_family_list()[0]['Marriage Date']) )
 
-
     def test_checkMarriageBeforeDivorce(self):
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
@@ -188,7 +188,7 @@ class FamilyTests(unittest.TestCase):
             MarriageBeforeDivorce(family.get_family_list(), [])
             print(f"Didn't detect Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         except:
-            print(f"Failed with error {str(family.get_family_list()[0]['Married'])} ❌")
+            print(f"Failed successfully with error, Marriage Date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])}✅") 
         #test 4
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '18 JAN 2013'
@@ -207,9 +207,6 @@ class FamilyTests(unittest.TestCase):
             print(f"Didn't detect Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         except:
             print(f"Failed successfully with error, Marriage Date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])}✅") 
-
-
-        
 
     def test_checkDivorceBeforeDeath(self):
         individual = Individual()
@@ -433,13 +430,3 @@ if __name__ == '__main__':
     with open('./family_tests.out' , 'w') as f:
         main(f)
         
-
-def main(out = sys.stderr, verbosity = 2):
-    loader = unittest.TestLoader()
-    suite = loader.loadTestsFromModule(sys.modules[__name__])
-    unittest.TextTestRunner(out, verbosity = verbosity).run(suite)
-
-
-if __name__ == '__main__':
-    with open('./family_tests.out' , 'w') as f:
-        main(f)
