@@ -27,7 +27,6 @@ def initial_error_checking(gedcom_lines):
 
 # List of individual functions
 individual_functions = [
-    dateBeforeCurrentDate,
     parents_not_too_old,
     individual_is_too_young_to_be_married,
     ageIsLessThan150
@@ -49,7 +48,8 @@ def individuals_error_checking(individual_list):
 
 # List of family functions
 family_functions = [
-    divorceBeforeDeath
+    divorceBeforeDeath,
+    dateBeforeCurrentDate
 ]
 
 def families_error_checking(individual_list, family_list):

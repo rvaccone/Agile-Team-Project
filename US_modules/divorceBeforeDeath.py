@@ -1,7 +1,7 @@
 #[US06] - TaeSeo
 import datetime 
 
-def divorceBeforeDeath(family_list, individual_list):
+def divorceBeforeDeath(individual_list, family_list):
     for family in family_list:
         if family['Divorce Date'] != 'N/A':
             for individual in individual_list:
