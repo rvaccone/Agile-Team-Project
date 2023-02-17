@@ -94,6 +94,7 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
 
+    def checkParentsNotTooOld(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 84
         individual.get_individual_list()[0]['Children'] = ['@I2@', '@I3@']
