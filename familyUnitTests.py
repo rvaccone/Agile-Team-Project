@@ -1,5 +1,6 @@
 # Imported packages
 import unittest
+import sys
 
 # Imported files
 from projectDictionaries import *
@@ -146,7 +147,7 @@ class FamilyTests(unittest.TestCase):
 
         
 
-    def checkDivorceBeforeDeath(self):
+    def test_checkDivorceBeforeDeath(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Death'] = '1 JAN 2005'
         individual.get_individual_list()[0]['ID'] = "I1"
@@ -358,9 +359,12 @@ class FamilyTests(unittest.TestCase):
             print(f"Failed successfully with error {str(family.get_family_list())} ✅")
         
 
+def main(out = sys.stderr, verbosity = 2):
+    loader = unittest.TestLoader()
+    suite = loader.loadTestsFromModule(sys.modules[__name__])
+    unittest.TextTestRunner(out, verbosity = verbosity).run(suite)
 
 
-runner = unittest.TextTestRunner()
-runner.run(FamilyTests('checkBigamy'))
-        
-    
+if __name__ == '__main__':
+    with open('./family_tests.out' , 'w') as f:
+        main(f)
