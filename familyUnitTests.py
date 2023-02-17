@@ -145,7 +145,7 @@ class FamilyTests(unittest.TestCase):
 
         
 
-    def checkDivorceBeforeDeath(self):
+    def test_checkDivorceBeforeDeath(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Death'] = '1 JAN 2050'
         individual.get_individual_list()[0]['ID'] = "I1"
@@ -206,7 +206,5 @@ class FamilyTests(unittest.TestCase):
         except:
             print('Failed successfully with error: ' + str(family.get_family_list()[0]['Divorce Date']) )
 
-
-
-runner = unittest.TextTestRunner()
-runner.run(FamilyTests('checkDivorceBeforeDeath'))
+if __name__ == '__main__':
+    unittest.main()
