@@ -45,7 +45,7 @@ class Individual():
             print(f"Error: {AssertionError} on function {function.__name__} ❌")
 
 class IndividualTests(unittest.TestCase):
-    def checkDatesBeforeCurrent():
+    def test_checkDatesBeforeCurrent():
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2025'
         try:
@@ -86,7 +86,7 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) )
 
-    def checkIndividualNotTooOld():
+    def test_checkIndividualNotTooOld():
 
         individual = Individual()
         individual.create_individual(individual_dict)['Age'] = 110
@@ -128,7 +128,7 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Age']) )
 
-    def birth_before_death():
+    def test_birth_before_death():
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
         individual.get_individual_list()[0]['Death'] = '16 JUL 1992'

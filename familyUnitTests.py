@@ -47,7 +47,7 @@ class Family():
 
 
 class FamilyTests(unittest.TestCase):
-    def checkDatesBeforeCurrent(self):
+    def test_checkDatesBeforeCurrent(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2025'
         family = Family()
@@ -98,7 +98,7 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print('Failed successfully with error:' )
 
-    def checkMarriageBeforeDivorce(self):
+    def test_checkMarriageBeforeDivorce(self):
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '1 JAN 2000'
         family.get_family_list()[0]['Divorce Date'] = '1 JAN 1990'
@@ -210,7 +210,7 @@ class FamilyTests(unittest.TestCase):
             print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
 
 
-    def birth_before_marriage():
+    def test_birth_before_marriage():
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
         individual.get_individual_list()[0]['ID'] = 'I1'
@@ -265,7 +265,7 @@ class FamilyTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | ' + str(family.get_family_list()[0]['Marriage Date']))    
 
-    def checkBigamy(self):
+    def test_checkBigamy(self):
         #test1
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '13 JAN 2000'
