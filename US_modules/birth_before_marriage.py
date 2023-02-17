@@ -1,6 +1,6 @@
 #Mateusz
-import datetime
-def birth_before_marriage(family_list, individual_list):
+from datetime import datetime
+def birth_before_marriage(individual_list, family_list):
     
      for family in family_list:
         # [US03] - Mateusz

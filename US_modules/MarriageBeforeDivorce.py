@@ -1,7 +1,7 @@
 # [US04] - Phillip
 from datetime import datetime, date
 
-def MarriageBeforeDivorce(family_list,individual_list):
+def MarriageBeforeDivorce(individual_list, family_list):
     def stringToDate(date):
         date = date.split()
         day, month, year = int(date[0]), int(

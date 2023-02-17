@@ -1,7 +1,7 @@
 # [US11] - Phillip
 from datetime import datetime, date
 
-def noBigamy(family_list, individual_list):
+def noBigamy(individual_list, family_list):
     def stringToDate(date):
         if date=='N/A':
             return datetime.now().date()
