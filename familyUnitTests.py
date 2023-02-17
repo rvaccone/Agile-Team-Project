@@ -5,7 +5,6 @@ import sys
 # Imported files
 from projectDictionaries import *
 from individualUnitTests import *
-import errorChecking as ec
 from US_modules.DateBeforeCurrent import dateBeforeCurrentDate
 from US_modules.MarriageBeforeDivorce import MarriageBeforeDivorce
 from US_modules.divorceBeforeDeath import divorceBeforeDeath
