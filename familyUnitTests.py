@@ -4,10 +4,10 @@ import sys
 # Imported files
 from projectDictionaries import *
 from individualUnitTests import *
-import errorChecking as ec
 from US_modules.DateBeforeCurrent import dateBeforeCurrentDate
-from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
+from US_modules.MarriageBeforeDivorce import MarriageBeforeDivorce
 from US_modules.divorceBeforeDeath import divorceBeforeDeath
+from US_modules.NoBigamy import noBigamy
 from US_modules.birth_before_marriage import birth_before_marriage
 from US_modules.MarriageBeforeDivorce import MarriageBeforeDivorce
 from US_modules.NoBigamy import noBigamy
@@ -48,7 +48,7 @@ class Family():
 
 
 class FamilyTests(unittest.TestCase):
-    def test_checkDatesBeforeCurrent(self):
+    def test_test_checkDatesBeforeCurrent(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2025'
         family = Family()
@@ -99,7 +99,7 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print('Failed successfully with error:' )
 
-    def test_checkMarriageBeforeDeath(self):
+    def test_test_checkMarriageBeforeDeath(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Death'] = '1 JAN 2005'
         individual.get_individual_list()[0]['ID'] = "I9"
@@ -188,7 +188,7 @@ class FamilyTests(unittest.TestCase):
             MarriageBeforeDivorce(family.get_family_list(), [])
             print(f"Didn't detect Marriage date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])} ❌")
         except:
-            print(f"Failed successfully with error, Marriage Date {str(family.get_family_list()[0]['Marriage Date'])} is after divorce date: {str(family.get_family_list()[0]['Divorce Date'])}✅") 
+            print(f"Failed with error {str(family.get_family_list()[0]['Married'])} ❌")
         #test 4
         family=Family()
         family.create_family(family_dict)['Marriage Date'] = '18 JAN 2013'
@@ -230,6 +230,7 @@ class FamilyTests(unittest.TestCase):
         family = Family()
         family.create_family(family_dict)['Divorce Date'] = '3 DEC 2050'
         family.get_family_list()[0]['Husband ID'] = "I1"
+        print("am i able to get here")
         try:
             divorceBeforeDeath(individual.get_individual_list(), family.get_family_list())
             print('Divorce date is before death date: ' + str(family.get_family_list()[0]['Divorce Date']))
@@ -432,4 +433,13 @@ if __name__ == '__main__':
     with open('./family_tests.out' , 'w') as f:
         main(f)
         
-    
+
+def main(out = sys.stderr, verbosity = 2):
+    loader = unittest.TestLoader()
+    suite = loader.loadTestsFromModule(sys.modules[__name__])
+    unittest.TextTestRunner(out, verbosity = verbosity).run(suite)
+
+
+if __name__ == '__main__':
+    with open('./family_tests.out' , 'w') as f:
+        main(f)
