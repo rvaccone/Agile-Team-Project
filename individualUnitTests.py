@@ -1,5 +1,6 @@
 # Imported packages
 import unittest
+import sys
 
 # Imported files
 from projectDictionaries import *
@@ -137,17 +138,11 @@ class IndividualTests(unittest.TestCase):
         except AssertionError:
             print('Ages do not align:')
 
-# def outputTestResults(function):
-#     with open('./output.txt', 'w') as f:
-#         sys.stdout = open("./output.txt", "w")
-#         try:
-#             function()
-#             f.write(f"{function.__name__} Unit Test Success ✅\n")
-#         except AssertionError:
-#             f.write(f"Error: {AssertionError} on function {function.__name__} ❌\n")
-
-# individual_tests = IndividualTests()
-# outputTestResults(individual_tests.checkIndividualNotTooOld)
+def main(out = sys.stderr, verbosity = 2):
+    loader = unittest.TestLoader()
+    suite = loader.loadTestsFromModule(sys.modules[__name__])
+    unittest.TextTestRunner(out, verbosity = verbosity).run(suite)
 
 if __name__ == '__main__':
-    unittest.main()
+    with open('./individual_tests.out' , 'w') as f:
+        main(f)

@@ -1,5 +1,6 @@
 # Imported packages
 import unittest
+import sys
 
 # Imported files
 from projectDictionaries import *
@@ -206,5 +207,11 @@ class FamilyTests(unittest.TestCase):
         except:
             print('Failed successfully with error: ' + str(family.get_family_list()[0]['Divorce Date']) )
 
+def main(out = sys.stderr, verbosity = 2):
+    loader = unittest.TestLoader()
+    suite = loader.loadTestsFromModule(sys.modules[__name__])
+    unittest.TextTestRunner(out, verbosity = verbosity).run(suite)
+
 if __name__ == '__main__':
-    unittest.main()
+    with open('./family_tests.out' , 'w') as f:
+        main(f)
