@@ -425,7 +425,6 @@ def main(out = sys.stderr, verbosity = 2):
     suite = loader.loadTestsFromModule(sys.modules[__name__])
     unittest.TextTestRunner(out, verbosity = verbosity).run(suite)
 
-
 if __name__ == '__main__':
     with open('./family_tests.out' , 'w') as f:
         main(f)
