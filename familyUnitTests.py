@@ -12,6 +12,7 @@ from US_modules.NoBigamy import noBigamy
 from US_modules.birth_before_marriage import birth_before_marriage
 from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
 from US_modules.NoBigamy import noBigamy
+from US_modules.uniqueIDs import uniqueIDS
 
 class Family():
     # Initializing an empty list to contain all the families
@@ -49,7 +50,7 @@ class Family():
 
 
 class FamilyTests(unittest.TestCase):
-    def test_test_checkDatesBeforeCurrent(self):
+    def test_checkDatesBeforeCurrent(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2025'
         family = Family()
@@ -100,7 +101,7 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print('Failed successfully with error:' )
 
-    def test_test_checkMarriageBeforeDeath(self):
+    def test_checkMarriageBeforeDeath(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Death'] = '1 JAN 2005'
         individual.get_individual_list()[0]['ID'] = "I9"
@@ -419,6 +420,41 @@ class FamilyTests(unittest.TestCase):
             print(f"Bigamy went undetected: {str(family.get_family_list())} ❌")
         except:
             print(f"Failed successfully with error {str(family.get_family_list())} ✅")
+    
+    def test_uniqueIDs(self):
+        # Adding two individuals with different IDs
+        ind = Individual()
+        ind1 = ind.create_individual(individual_dict)
+        ind.get_individual_list()[-1]['ID'] = '@I1@'
+        ind2 = ind.create_individual(individual_dict)
+        ind.get_individual_list()[-1]['ID'] = '@I2@'
+
+        # Adding a family with another ID
+        fam = Family()
+        fam1 = fam.create_family(family_dict)
+        fam.get_family_list()[-1]['ID'] = '@F1@'
+
+        print('-'*50)
+
+        # Unit case 1
+        try:
+            uniqueIDS(ind.get_individual_list(), fam.get_family_list())
+            print('uniqueIDs: Passed successfully ✅')
+        except:
+            print('uniqueIDs: Failed unsuccessfully ❌')
+        
+        # Adding an individual with the same ID as the first
+        ind3 = ind.create_individual(individual_dict)
+        ind.get_individual_list()[-1]['ID'] = '@I1@'
+
+        # Unit case 2
+        try:
+            uniqueIDS(ind.get_individual_list(), fam.get_family_list())
+            print('uniqueIDs: Passed unsuccessfully ❌')
+        except:
+            print('uniqueIDs: Failed successfully ✅')
+
+        print('-'*50)
 
 def main(out = sys.stderr, verbosity = 2):
     loader = unittest.TestLoader()
