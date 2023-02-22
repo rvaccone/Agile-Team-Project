@@ -7,6 +7,7 @@ from projectDictionaries import *
 from US_modules.ageIsLessThan150 import ageIsLessThan150
 from US_modules.birth_before_death import birth_before_death
 from US_modules.Parents_not_too_old import parents_not_too_old
+from US_modules.listDeceased import listDeceased
 
 class Individual():
     # Initializing an empty list to contain all the individuals
@@ -217,6 +218,15 @@ class IndividualTests(unittest.TestCase):
         except AssertionError:
             print('Ages do not align:')
 
+    def test_checkListDeceased(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '16 MAR 2002'
+        numberOfDeceased = listDeceased(individual.get_individual_list())
+        try:
+            self.assertEqual(numberOfDeceased, 2, 'Error: Individual is deceased')
+        except AssertionError:
+            print('Failed successfully with error: ' + str(numberOfDeceased))
+
 def main(out = sys.stderr, verbosity = 2):
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromModule(sys.modules[__name__])
@@ -225,3 +235,4 @@ def main(out = sys.stderr, verbosity = 2):
 if __name__ == '__main__':
     with open('./individual_tests.out' , 'w') as f:
         main(f)
+
