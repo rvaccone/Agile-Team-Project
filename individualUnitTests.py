@@ -138,6 +138,42 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
 
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 AUG 1990'
+        individual.get_individual_list()[0]['Death'] = '16 JUL 1992'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+    
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 JAN 1990'
+        individual.get_individual_list()[0]['Death'] = '16 JAN 1992'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '15 JUL 2000'
+        individual.get_individual_list()[0]['Death'] = '16 JUL 1992'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '16 JUL 1995'
+        individual.get_individual_list()[0]['Death'] = '16 JUL 1992'
+        try:
+            birth_before_death(individual.get_individual_list())
+            print('Birth is Before Death:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+        except:
+            print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
+    
     def test_checkParentsNotTooOld(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
