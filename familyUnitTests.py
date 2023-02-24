@@ -52,8 +52,22 @@ class Family:
     def get_family_list(self):
         return self.family_list
 
+    # Creating a family with given attributes
+    def create_modified_family(self, family_dict, mods):
+        family = self.create_family(family_dict)
+        for key in mods:
+            family[key] = mod[key]
+        return family
+
 
 class FamilyTests(unittest.TestCase):
+    def setUp(self):
+        # Adding a line to separate unit test cases
+        print("-" * 100)
+
+        # Printing the name of the unit test function
+        print(self.id().split('.')[-1].replace('test_', '') + ' Unit Test(s)\n')
+
     def test_checkDatesBeforeCurrent(self):
         individual = Individual()
         individual.create_individual(individual_dict)["Birthday"] = "1 JAN 2025"
@@ -622,8 +636,6 @@ class FamilyTests(unittest.TestCase):
         fam1 = fam.create_family(family_dict)
         fam.get_family_list()[-1]["ID"] = "@F1@"
 
-        print("-" * 50)
-
         # Unit case 1
         try:
             uniqueIDS(ind.get_individual_list(), fam.get_family_list())
@@ -643,9 +655,6 @@ class FamilyTests(unittest.TestCase):
             print("uniqueIDs: Failed successfully ✅")
 
     def test_checkGenderRole(self):
-        # Creating a line to make the test case more visible
-        print("-" * 50)
-
         # Creating a family
         fam = Family()
         fam1 = fam.create_family(family_dict)
@@ -689,10 +698,6 @@ class FamilyTests(unittest.TestCase):
             print("correctGenderRole: passed unsuccessfully ❌")
         except:
             print("correctGenderRole: failed successfully ✅")
-
-        # Creating a line to make the test case more visible
-        print("-" * 50)
-
 
 def main(out=sys.stderr, verbosity=2):
     loader = unittest.TestLoader()
