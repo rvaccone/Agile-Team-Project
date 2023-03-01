@@ -8,6 +8,7 @@ from US_modules.ageIsLessThan150 import ageIsLessThan150
 from US_modules.birth_before_death import birth_before_death
 from US_modules.Parents_not_too_old import parents_not_too_old
 from US_modules.listDeceased import listDeceased
+from US_modules.listLivingMarried import listLivingMarried
 
 class Individual():
     # Initializing an empty list to contain all the individuals
@@ -226,6 +227,18 @@ class IndividualTests(unittest.TestCase):
             self.assertEqual(numberOfDeceased, 2, 'Error: Individual is deceased')
         except AssertionError:
             print('Failed successfully with error: ' + str(numberOfDeceased))
+
+    def test_checkListLivingMarried(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = 'N/A'
+        individual.get_individual_list()[0]['Spouse'] = 'RANDOMID'
+        numberOfLivingMarried = listLivingMarried(individual.get_individual_list())
+        try:
+            self.assertEqual(numberOfLivingMarried, 2, 'Error: Incorrect')
+        except AssertionError:
+            print('Failed successfully with error: ' + str(numberOfLivingMarried))
+
+
 
 def main(out = sys.stderr, verbosity = 2):
     loader = unittest.TestLoader()
