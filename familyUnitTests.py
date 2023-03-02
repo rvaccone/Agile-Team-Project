@@ -81,8 +81,8 @@ class FamilyTests(unittest.TestCase):
         individual.get_individual_list()[1]['Spouse'] = 'I7'
 
         individual.create_individual(individual_dict)['ID'] = 'I10'
-        individual.get_individual_list[1]['Children'] = ['I10']
-        individual.get_individual_list[0]['Children'] = ['I10']
+        individual.get_individual_list()[1]['Children'] = ['I10']
+        individual.get_individual_list()[0]['Children'] = ['I10']
 
         family = Family()
         family.create_family(family_dict)['Husband ID'] = 'I7'
@@ -95,8 +95,8 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print("Failed: Detected as married descendants")
 
-        family.get_family_list[0]['Wife ID'] = 'I10'
-        individual.get_individual_list[0]['Spouse'] = 'I10'
+        family.get_family_list()[0]['Wife ID'] = 'I10'
+        individual.get_individual_list()[0]['Spouse'] = 'I10'
 
         try:
             noMarriageToAncestors(individual.get_individual_list(),family.get_family_list())
@@ -104,15 +104,15 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print("Passed: Correctly detected married descendants")
 
-        family.get_family_list[0]['Wife ID'] = 'I9'
-        individual.get_individual_list[0]['Spouse'] = 'I9'
+        family.get_family_list()[0]['Wife ID'] = 'I9'
+        individual.get_individual_list()[0]['Spouse'] = 'I9'
 
         individual.create_individual(individual_dict)['ID'] = 'I11'
         individual.get_individual_list()[3]['Spouse'] = 'I10'
         individual.get_individual_list()[2]['Spouse'] = 'I11'
 
         family.create_family(family_dict)['Husband ID'] = 'I10'
-        family.get_family_list[1]['Wife ID'] = 'I11'
+        family.get_family_list()[1]['Wife ID'] = 'I11'
 
         individual.create_individual(individual_dict)['ID'] = 'I12'
         individual.get_individual_list()[3]['Children'] = ['I12']
