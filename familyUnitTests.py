@@ -12,6 +12,7 @@ from US_modules.NoBigamy import noBigamy
 from US_modules.birth_before_marriage import birth_before_marriage
 from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
 from US_modules.NoBigamy import noBigamy
+from US_modules.fewer_than_fifteen import fewer_than_fifteen
 
 class Family():
     # Initializing an empty list to contain all the families
@@ -270,13 +271,46 @@ class FamilyTests(unittest.TestCase):
         except:
             print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
 
+    def test_fewer_than_fifteen(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Children'] = ['I1']
+        family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+        for i in range(13):
+            individual = Individual()
+            individual.create_individual(individual_dict)['ID'] = 'I'+str(i+2)
+            family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+        
+        try:
+            fewer_than_fifteen(individual.get_individual_list(), family.get_family_list())
+            print("Fewer than Fifteen Siblings**********************************")
+        except:
+            print("More than Fifteen Sibling**********************************")
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Children'] = ['I1']
+        family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+        for i in range(14):
+            individual = Individual()
+            individual.create_individual(individual_dict)['ID'] = 'I'+str(i+2)
+            family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+
+        try:
+            fewer_than_fifteen(individual.get_individual_list(), family.get_family_list())
+            print("Fewer than Fifteen Siblings**********************************")
+        except:
+            print("More than Fifteen Sibling**********************************")
+
 
     def test_birth_before_marriage(self):
         individual = Individual()
-        individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
+        individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2002' 
         individual.get_individual_list()[0]['ID'] = 'I1'
         family = Family()
-        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2002'
+        family.create_family(family_dict)['Marriage Date'] = '5 DEC 2019'
         family.get_family_list()[0]['Husband ID'] = 'I1'
         try:
             birth_before_marriage(individual.get_individual_list(), family.get_family_list())
