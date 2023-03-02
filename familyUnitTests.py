@@ -12,6 +12,8 @@ from US_modules.NoBigamy import noBigamy
 from US_modules.birth_before_marriage import birth_before_marriage
 from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
 from US_modules.NoBigamy import noBigamy
+from US_modules.more_than_5_births import more_than_5_births
+from US_modules.siblingSpacing import siblingSpacing
 
 class Family():
     # Initializing an empty list to contain all the families
@@ -419,6 +421,90 @@ class FamilyTests(unittest.TestCase):
             print(f"Bigamy went undetected: {str(family.get_family_list())} ❌")
         except:
             print(f"Failed successfully with error {str(family.get_family_list())} ✅")
+
+    def test_more_than_5_births(self):
+        print("test this")
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2002'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Children'] = ['I2', 'I3', 'I4', 'I5', 'I6', 'I7']
+        for i in range(2,9):
+            individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
+            individual.get_individual_list()[-1]['ID'] = 'I'+str(i)
+        try:
+            more_than_5_births(individual.get_individual_list(), family.get_family_list())
+            print(f"More than 5 births were not detected: {str(family.get_family_list())} ❌")
+        except:
+            print(f"Failed successfully with error {str(family.get_family_list())} ✅")
+        
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2002'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Children'] = ['I2', 'I3']
+        for i in range(2,4):
+            individual.create_individual(individual_dict)['Birthday'] = '5 DEC 2019' 
+            individual.get_individual_list()[-1]['ID'] = 'I'+str(i)
+        try:
+            more_than_5_births(individual.get_individual_list(), family.get_family_list())
+            print(f"Less than 5 births were not detected: {str(family.get_family_list())} ✅")
+        except:
+            print(f"Failed unsuccessfully with error {str(family.get_family_list())} ❌")
+        
+
+    def test_sibling_spacing(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['Birthday'] = '5 JUN 1998'
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        individual.create_individual(individual_dict)['Birthday'] = '13 FEB 1998'
+        individual.get_individual_list()[1]['ID'] = 'I2'
+        individual.create_individual(individual_dict)['Birthday'] = '5 JUN 2020'
+        individual.get_individual_list()[2]['ID'] = 'I3'
+        individual.create_individual(individual_dict)['Birthday'] = '13 FEB 2018'
+        individual.get_individual_list()[3]['ID'] = 'I4'
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2002'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.get_family_list()[0]['Children'] = ['I3', 'I4']
+        try:
+            siblingSpacing(individual.get_individual_list(), family.get_family_list())
+            print(f"Siblings are spaced correctly: {str(individual.get_individual_list())} ✅")
+        except:
+            print(f"Failed with error {str(individual.get_individual_list())} ❌")
+        individual.get_individual_list()[3]['Birthday'] = '13 FEB 2020'
+        try:
+            siblingSpacing(individual.get_individual_list(), family.get_family_list())
+            print(f"Siblings are spaced incorrectly: {str(individual.get_individual_list())} ❌")
+        except:
+            print(f"Failed successfully with error {str(individual.get_individual_list())} ✅")
+        individual.get_individual_list()[3]['Birthday'] = '5 JUN 2020'
+        try:
+            siblingSpacing(individual.get_individual_list(), family.get_family_list())
+            print(f"Siblings are spaced correctly: {str(individual.get_individual_list())} ✅")
+        except:
+            print(f"Failed with error {str(individual.get_individual_list())} ❌")
+        individual.get_individual_list()[3]['Birthday'] = '13 FEB 2018'
+        individual.create_individual(individual_dict)['Birthday'] = '5 JUN 2020'
+        individual.get_individual_list()[4]['ID'] = 'I5'
+        family.get_family_list()[0]['Children'] = ['I3', 'I4', 'I5']
+        try:
+            siblingSpacing(individual.get_individual_list(), family.get_family_list())
+            print(f"Siblings are spaced correctly: {str(individual.get_individual_list())} ✅")
+        except:
+            print(f"Failed with error {str(individual.get_individual_list())} ❌")
+        
+        individual.get_individual_list()[4]['Birthday'] = '5 SEP 2020'
+        try:
+            siblingSpacing(individual.get_individual_list(), family.get_family_list())
+            print(f"Siblings are spaced incorrectly: {str(individual.get_individual_list())} ❌")
+        except:
+            print(f"Failed successfully with error {str(individual.get_individual_list())} ✅")
 
 def main(out = sys.stderr, verbosity = 2):
     loader = unittest.TestLoader()
