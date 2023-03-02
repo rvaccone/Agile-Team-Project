@@ -21,6 +21,4 @@ def listAncestors(person, individual_list, family_list):
 def noMarriageToAncestors(individual_list, family_list):
     for individual in individual_list:
         ancestors = listAncestors(individual, individual_list, family_list)
-        if individual['Spouse'] in ancestors:
-            print("Error: Individual", individual['ID'], "is married to their ancestor", individual['Spouse'])
-            return False    
+        assert((individual['Spouse'] not in ancestors)), "Error: Marriage to ancestor"

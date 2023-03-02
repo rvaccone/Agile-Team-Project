@@ -9,6 +9,6 @@ def SiblingsNotMarried (individual_list,family_list):
                     if(individual['ID'] == child):
                         if(individual['Spouse'] != 'N/A'):
                             for otherChild in children:
-                                assert(otherChild != individual['spouse']), "Siblings are married"
+                                assert(otherChild != individual['Spouse']), "Siblings are married"
 
 
