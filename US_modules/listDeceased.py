@@ -8,6 +8,6 @@ def listDeceased(individual_list):
             number_of_deceased += 1
             deceased_list.append(individual['ID'])
 
-    return deceased_list, number_of_deceased
+    return number_of_deceased
 
     
