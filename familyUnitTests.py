@@ -14,7 +14,9 @@ from US_modules.MarriageBeforeDeath import MarriageBeforeDeath
 from US_modules.NoBigamy import noBigamy
 from US_modules.uniqueIDs import uniqueIDS
 from US_modules.correctGenderRole import correctGenderRole
-
+from US_modules.SiblingsNotMarried import SiblingsNotMarried
+from US_modules.NoMarriageToDescendants import noMarriageToAncestors
+from US_modules.fewer_than_fifteen import fewer_than_fifteen
 
 class Family:
     # Initializing an empty list to contain all the families
@@ -68,7 +70,98 @@ class FamilyTests(unittest.TestCase):
         # Printing the name of the unit test function
         print(self.id().split('.')[-1].replace('test_', '') + ' Unit Test(s)\n')
 
-    def test_checkDatesBeforeCurrent(self):
+    def test_noMarriageToDescendants(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I7'
+        individual.get_individual_list()[0]['Spouse'] = 'I9'
+
+        individual.create_individual(individual_dict)['ID'] = 'I9'
+        individual.get_individual_list()[1]['Spouse'] = 'I7'
+
+        individual.create_individual(individual_dict)['ID'] = 'I10'
+        individual.get_individual_list[1]['Children'] = ['I10']
+        individual.get_individual_list[0]['Children'] = ['I10']
+
+        family = Family()
+        family.create_family(family_dict)['Husband ID'] = 'I7'
+        family.get_family_list()[0]['Wife ID'] = 'I9'
+        family.get_family_list()[0]['Children'] = ['I10']
+
+        try:
+            noMarriageToAncestors(individual.get_individual_list(),family.get_family_list())
+            print("No marriages to descendants")
+        except AssertionError:
+            print("Failed: Detected as married descendants")
+
+        family.get_family_list[0]['Wife ID'] = 'I10'
+        individual.get_individual_list[0]['Spouse'] = 'I10'
+
+        try:
+            noMarriageToAncestors(individual.get_individual_list(),family.get_family_list())
+            print("Failed to detect married Descendants")
+        except AssertionError:
+            print("Passed: Correctly detected married descendants")
+
+        family.get_family_list[0]['Wife ID'] = 'I9'
+        individual.get_individual_list[0]['Spouse'] = 'I9'
+
+        individual.create_individual(individual_dict)['ID'] = 'I11'
+        individual.get_individual_list()[3]['Spouse'] = 'I10'
+        individual.get_individual_list()[2]['Spouse'] = 'I11'
+
+        family.create_family(family_dict)['Husband ID'] = 'I10'
+        family.get_family_list[1]['Wife ID'] = 'I11'
+
+        individual.create_individual(individual_dict)['ID'] = 'I12'
+        individual.get_individual_list()[3]['Children'] = ['I12']
+        individual.get_individual_list()[2]['Children'] = ['I12']
+        family.get_family_list()[1]['Wife ID'] = ['I10']
+        family.get_family_list()[1]['Husband'] = ['I11']
+
+        try:
+            noMarriageToAncestors(individual.get_individual_list(),family.get_family_list())
+            print("No marriages to descendants")
+        except AssertionError:
+            print("Failed: Detected as married descendants")
+
+        individual.get_individual_list()[4]['Spouse'] = 'I9'
+        individual.get_individual_list()[1]['Spouse'] = 'I12'
+        family.create_family(family_dict)['Husband ID'] = 'I12'
+        
+
+        try:
+            noMarriageToAncestors(individual.get_individual_list(),family.get_family_list())
+            print("Failed to detect marriage to descendants")
+        except AssertionError:
+            print("Passed: Detected as married descendants")
+
+
+
+    def test_siblingsNotMarried(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I7'
+        individual.get_individual_list()[0]['Spouse'] = 'I9'
+        individual.create_individual(individual_dict)['ID'] = 'I9'
+        individual.get_individual_list()[1]['Spouse'] = 'I7'
+        family = Family()
+        family.create_family(family_dict)['Husband ID'] = 'I7'
+        family.get_family_list()[0]['Wife ID'] = 'I9'
+
+        try:
+            SiblingsNotMarried(individual.get_individual_list(), family.get_family_list())
+            print("Siblings are not married")
+        except AssertionError:
+            print("Failed: Detected as siblings")
+
+        family.get_family_list()[0]['Children'] = ['I7','I9']
+
+        try:
+            SiblingsNotMarried(individual.get_individual_list(), family.get_family_list())
+            print("Failed: Did not detect married siblings")
+        except AssertionError:
+            print("Passed: Correctly detected married siblings")
+
+    def test_test_checkDatesBeforeCurrent(self):
         individual = Individual()
         individual.create_individual(individual_dict)["Birthday"] = "1 JAN 2025"
         family = Family()
@@ -409,18 +502,49 @@ class FamilyTests(unittest.TestCase):
                 + str(family.get_family_list()[0]["Divorce Date"])
             )
         except:
-            print(
-                "Failed successfully with error: Divorce is after death, Divorced: "
-                + str(family.get_family_list()[0]["Divorce Date"])
-            )
+            print('Failed successfully with error: Divorce is after death, Divorced: ' + str(family.get_family_list()[0]['Divorce Date']) )
+
+    def test_fewer_than_fifteen(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Children'] = ['I1']
+        family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+        for i in range(13):
+            individual = Individual()
+            individual.create_individual(individual_dict)['ID'] = 'I'+str(i+2)
+            family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+        
+        try:
+            fewer_than_fifteen(individual.get_individual_list(), family.get_family_list())
+            print("Fewer than Fifteen Siblings**********************************")
+        except:
+            print("More than Fifteen Sibling**********************************")
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        family = Family()
+        family.create_family(family_dict)['Children'] = ['I1']
+        family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+        for i in range(14):
+            individual = Individual()
+            individual.create_individual(individual_dict)['ID'] = 'I'+str(i+2)
+            family.get_family_list()[0]['Children'].append(individual.get_individual_list()[0]['ID'])
+
+        try:
+            fewer_than_fifteen(individual.get_individual_list(), family.get_family_list())
+            print("Fewer than Fifteen Siblings**********************************")
+        except:
+            print("More than Fifteen Sibling**********************************")
+
 
     def test_birth_before_marriage(self):
         individual = Individual()
-        individual.create_individual(individual_dict)["Birthday"] = "5 DEC 2019"
-        individual.get_individual_list()[0]["ID"] = "I1"
+        individual.create_individual(individual_dict)['Birthday'] = '1 JAN 2002' 
+        individual.get_individual_list()[0]['ID'] = 'I1'
         family = Family()
-        family.create_family(family_dict)["Marriage Date"] = "1 JAN 2002"
-        family.get_family_list()[0]["Husband ID"] = "I1"
+        family.create_family(family_dict)['Marriage Date'] = '5 DEC 2019'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
         try:
             birth_before_marriage(
                 individual.get_individual_list(), family.get_family_list()
