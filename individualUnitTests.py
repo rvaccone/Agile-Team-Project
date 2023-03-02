@@ -7,6 +7,9 @@ from projectDictionaries import *
 from US_modules.ageIsLessThan150 import ageIsLessThan150
 from US_modules.birth_before_death import birth_before_death
 from US_modules.Parents_not_too_old import parents_not_too_old
+from US_modules.male_lname_same import male_lname_same
+from US_modules.listDeceased import listDeceased
+from US_modules.listLivingMarried import listLivingMarried
 
 class Individual():
     # Initializing an empty list to contain all the individuals
@@ -174,6 +177,43 @@ class IndividualTests(unittest.TestCase):
         except:
             print('Failed successfully with error:' + str(individual.get_individual_list()[0]['Birthday']) + ' | '+ str(individual.get_individual_list()[0]['Death']))
     
+    def test_same_male_lastnames(self):
+        individual = Individual()
+        
+        individual.create_individual(individual_dict)['Name'] = 'Joe Biden' 
+        individual.get_individual_list()[0]['ID'] = 'I2'
+        individual.get_individual_list()[0]['Sex'] = 'M'
+        individual.get_individual_list()[0]['Children'] = ['I1','I6']
+        
+        individual = Individual()
+
+        individual.create_individual(individual_dict)['Name'] = 'Hunter Biden'
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        individual.get_individual_list()[0]['Sex'] = 'M'
+        
+        try:
+            male_lname_same(individual.get_individual_list())
+            print('Same Last Name')
+        except:
+            print('Different Last names')
+
+        individual = Individual()
+        
+        individual.create_individual(individual_dict)['Name'] = 'Joe Biden'
+        individual.get_individual_list()[0]['ID'] = 'I2'
+        individual.get_individual_list()[0]['Sex'] = 'M'
+        individual.get_individual_list()[0]['Children'] = ['I1','I6']
+        
+        individual.create_individual(individual_dict)['Name'] = 'Hunter Obama'
+        individual.get_individual_list()[1]['ID'] = 'I1'
+        individual.get_individual_list()[1]['Sex'] = 'M'
+    
+        try:
+            male_lname_same(individual.get_individual_list())
+            print('Same Last Name')
+        except:
+            print('Different Last names')
+
     def test_checkParentsNotTooOld(self):
         individual = Individual()
         individual.create_individual(individual_dict)['Birthday'] = '15 JUL 1990'
@@ -217,6 +257,27 @@ class IndividualTests(unittest.TestCase):
         except AssertionError:
             print('Ages do not align:')
 
+    def test_checkListDeceased(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = '16 MAR 2002'
+        numberOfDeceased = listDeceased(individual.get_individual_list())
+        try:
+            self.assertEqual(numberOfDeceased, 2, 'Error: Individual is deceased')
+        except AssertionError:
+            print('Failed successfully with error: ' + str(numberOfDeceased))
+
+    def test_checkListLivingMarried(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['Death'] = 'N/A'
+        individual.get_individual_list()[0]['Spouse'] = 'RANDOMID'
+        numberOfLivingMarried = listLivingMarried(individual.get_individual_list())
+        try:
+            self.assertEqual(numberOfLivingMarried, 2, 'Error: Incorrect')
+        except AssertionError:
+            print('Failed successfully with error: ' + str(numberOfLivingMarried))
+
+
+
 def main(out = sys.stderr, verbosity = 2):
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromModule(sys.modules[__name__])
@@ -225,3 +286,4 @@ def main(out = sys.stderr, verbosity = 2):
 if __name__ == '__main__':
     with open('./individual_tests.out' , 'w') as f:
         main(f)
+
