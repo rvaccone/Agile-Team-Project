@@ -860,12 +860,6 @@ class FamilyTests(unittest.TestCase):
             print(f"Unique family by spouse: {str(individual.get_individual_list())} ❌")
         except:
             print(f"Failed successfully with error {str(individual.get_individual_list())} ✅")
-
-
-
-
-
-def main(out = sys.stderr, verbosity = 2):
     def test_uniqueIDs(self):
         # Adding two individuals with different IDs
         ind = Individual()
