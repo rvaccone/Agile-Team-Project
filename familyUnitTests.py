@@ -21,6 +21,8 @@ from US_modules.NoMarriageToDescendants import noMarriageToAncestors
 from US_modules.fewer_than_fifteen import fewer_than_fifteen
 from US_modules.uniqueNameAndBirthday import uniqueNameAndBirthday
 from US_modules.uniqueFamilyBySpouses import uniqueFamilyBySpouses
+from US_modules.IncludeIndividualAges import IncludeIndividualAges
+from US_modules.OrderSiblingsByAge import OrderSiblingsByAge
 
 class Family:
     # Initializing an empty list to contain all the families
@@ -860,6 +862,61 @@ class FamilyTests(unittest.TestCase):
             print(f"Unique family by spouse: {str(individual.get_individual_list())} ❌")
         except:
             print(f"Failed successfully with error {str(individual.get_individual_list())} ✅")
+
+    def test_IncludeIndividualAges(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I7'
+        individual.get_individual_list()[0]['Age'] = '10'
+
+        individual.create_individual(individual_dict)['ID'] = 'I9'
+        individual.get_individual_list()[1]['Age'] = '15'
+
+        try:
+            IncludeIndividualAges(individual.get_individual_list())
+            print("Passed: All individuals have ages.")
+        except AssertionError:
+            print("Failed: Did not detect all ages when they were present.")
+
+
+        individual.create_individual(individual_dict)['ID'] = 'I5'
+
+        try:
+            IncludeIndividualAges(individual.get_individual_list())
+            print("Failed: Did not detect missing age")
+        except AssertionError:
+            print("Passed: Successfully detected missing age")
+
+
+    def test_OrderSiblingsByAge(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I7'
+        individual.get_individual_list()[0]['Age'] = '10'
+
+        individual.create_individual(individual_dict)['ID'] = 'I9'
+        individual.get_individual_list()[1]['Age'] = '15'
+
+        individual.create_individual(individual_dict)['ID'] = 'I10'
+        individual.get_individual_list()[2]['Children'] = ['I9','I7']
+
+        family = Family()
+        family.create_family(family_dict)['Husband ID'] = 'I10'
+        family.get_family_list()[0]['Children'] = ['I9','I7']
+
+
+        try:
+            OrderSiblingsByAge(individual.get_individual_list(),family.get_family_list())
+            print("Passed: Siblings ordered by age")
+        except AssertionError:
+            print("Failed: Did not detect siblings ordered by age when they were")
+
+        family.get_family_list()[0]['Children'] = ['I7','I9']
+
+        try:
+            OrderSiblingsByAge(individual.get_individual_list(),family.get_family_list())
+            print("Failed: Detected siblings ordered by age when they were not")
+        except AssertionError:
+            print("Passed: Successfully detected siblings not ordered by age")
+
     def test_uniqueIDs(self):
         # Adding two individuals with different IDs
         ind = Individual()
