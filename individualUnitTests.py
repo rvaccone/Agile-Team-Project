@@ -56,7 +56,7 @@ class Individual:
     def create_modified_individual(self, individual_dict, mods):
         individual = self.create_individual(individual_dict)
         for key in mods:
-            individual[key] = mod[key]
+            individual[key] = mods[key]
         return individual
 
 

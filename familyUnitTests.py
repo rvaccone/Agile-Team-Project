@@ -19,6 +19,8 @@ from US_modules.correctGenderRole import correctGenderRole
 from US_modules.SiblingsNotMarried import SiblingsNotMarried
 from US_modules.NoMarriageToDescendants import noMarriageToAncestors
 from US_modules.fewer_than_fifteen import fewer_than_fifteen
+from US_modules.listLivingSingle import listLivingSingle
+from US_modules.listMultipleBirths import listMultipleBirths, MultipleBirth
 
 from US_modules.uniqueNameAndBirthday import uniqueNameAndBirthday
 from US_modules.uniqueFamilyBySpouses import uniqueFamilyBySpouses
@@ -71,7 +73,7 @@ class Family:
     def create_modified_family(self, family_dict, mods):
         family = self.create_family(family_dict)
         for key in mods:
-            family[key] = mod[key]
+            family[key] = mods[key]
         return family
 
 
@@ -999,6 +1001,71 @@ class FamilyTests(unittest.TestCase):
             print("correctGenderRole: passed unsuccessfully ❌")
         except:
             print("correctGenderRole: failed successfully ✅")
+    
+    def test_listLivingSingle(self):
+        # Creating all individuals such that only @I3@ should return
+        ind = Individual()
+        ind1 = ind.create_modified_individual(individual_dict, {'ID': '@I1@','Age': 35, 'Spouse': '@I2@'})
+        ind2 = ind.create_modified_individual(individual_dict, {'ID': '@I2@','Age': 33, 'Spouse': '@I1@'})
+        ind3 = ind.create_modified_individual(individual_dict, {'ID': '@I3@','Age': 33})
+        ind4 = ind.create_modified_individual(individual_dict, {'ID': '@I4@','Age': 24})
+        ind5 = ind.create_modified_individual(individual_dict, {'ID': '@I5@','Age': 45})
+        ind5 = ind.create_modified_individual(individual_dict, {'ID': '@I6@','Age': 44})
+        ind5 = ind.create_modified_individual(individual_dict, {'ID': '@I7@'})
+
+        # Creating all families such that only @I3@ should return
+        fam = Family()
+        fam1 = fam.create_modified_family(family_dict, {'Marriage Date': '1 JAN 2010', 'Husband ID': '@I1@', 'Wife ID': '@I2@'})
+        fam2 = fam.create_modified_family(family_dict, {'Marriage Date': '1 JAN 2010', 'Divorce Date': '1 JAN 2015', 'Husband ID': '@I5@', 'Wife ID': '@I6@'})
+
+        output = listLivingSingle(ind.get_individual_list(), fam.get_family_list())
+
+        try:
+            self.assertTrue(output == ['@I3@'], f'The return value is incorrect, expected: [@I3@], got: {output} ❌')
+            print("Passed successfully ✅")
+        except AssertionError as warn:
+            print(warn)
+
+    def test_listMultipleBirths(self):
+        # Creating all individuals such that two MultipleBirth classes should return
+        ind = Individual()
+        ind1 = ind.create_modified_individual(individual_dict, {'ID': '@I1@', 'Birthday': '1 JAN 2010'}) # Start of F1
+        ind2 = ind.create_modified_individual(individual_dict, {'ID': '@I2@', 'Birthday': '1 JAN 2010'})
+        ind3 = ind.create_modified_individual(individual_dict, {'ID': '@I3@', 'Birthday': '3 FEB 2008'})
+        ind4 = ind.create_modified_individual(individual_dict, {'ID': '@I4@', 'Birthday': '11 NOV 2012'}) # Start of F2
+        ind5 = ind.create_modified_individual(individual_dict, {'ID': '@I5@', 'Birthday': '3 DEC 2010'})
+        ind6 = ind.create_modified_individual(individual_dict, {'ID': '@I6@', 'Birthday': '3 DEC 2010'})
+        ind7 = ind.create_modified_individual(individual_dict, {'ID': '@I7@', 'Birthday': '1 JAN 2010'}) # Start of F3
+
+        # Creating all families such that two MultipleBirth classes should return
+        fam = Family()
+        fam1 = fam.create_modified_family(family_dict, {'ID': '@F1@', 'Children': ['@I1@', '@I2@', '@I3@']})
+        fam2 = fam.create_modified_family(family_dict, {'ID': '@F2@', 'Children': ['@I4@', '@I5@', '@I6@']})
+        fam3 = fam.create_modified_family(family_dict, {'ID': '@F3@', 'Children': ['@I7@']})
+
+        expected_output = [MultipleBirth('@F1@', '1 JAN 2010', ['@I1@', '@I2@']), MultipleBirth('@F2@', '3 DEC 2010', ['@I5@', '@I6@'])]
+
+        output = listMultipleBirths(ind.get_individual_list(), fam.get_family_list())
+
+        try:
+            self.assertTrue([out.compare() for out in output] == [out.compare() for out in expected_output], f'The return value is incorrect, expected: {expected_output}, got: {output} ❌')
+            print("Passed successfully ✅")
+        except AssertionError as warn:
+            print(warn)
+
+        # Removing the common birthdays from familes F1 and F2
+        ind.get_individual_list()[0]["Birthday"] = "N/A"
+        ind.get_individual_list()[4]["Birthday"] = "N/A"
+
+        output = listMultipleBirths(ind.get_individual_list(), fam.get_family_list())
+
+        try:
+            self.assertTrue(output == [], f'Will not return an empty list if there are no multiple births ❌')
+            print("Passed successfully ✅")
+        except AssertionError as warn:
+            print(warn)
+
+
 
     def test_checkAuntsAndUnclesDoNotMarryNieceOrNewphew(self):
         individual = Individual()
