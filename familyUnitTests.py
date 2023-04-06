@@ -917,11 +917,6 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print("Passed: Successfully detected siblings not ordered by age")
 
-
-
-
-
-def main(out = sys.stderr, verbosity = 2):
     def test_uniqueIDs(self):
         # Adding two individuals with different IDs
         ind = Individual()
