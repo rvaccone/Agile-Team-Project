@@ -19,6 +19,13 @@ from US_modules.correctGenderRole import correctGenderRole
 from US_modules.SiblingsNotMarried import SiblingsNotMarried
 from US_modules.NoMarriageToDescendants import noMarriageToAncestors
 from US_modules.fewer_than_fifteen import fewer_than_fifteen
+
+from US_modules.uniqueNameAndBirthday import uniqueNameAndBirthday
+from US_modules.uniqueFamilyBySpouses import uniqueFamilyBySpouses
+from US_modules.auntsAndUncles import noMarriageToAuntsAndUncles
+from US_modules.auntsAndUncles import listAuntsAndUncles
+from US_modules.noMarryFirstCousin import noMarriageToFirstCousins
+from US_modules.noMarryFirstCousin import listFirstCousins
 from US_modules.uniqueNameAndBirthday import uniqueNameAndBirthday
 from US_modules.uniqueFamilyBySpouses import uniqueFamilyBySpouses
 from US_modules.IncludeIndividualAges import IncludeIndividualAges
@@ -992,6 +999,99 @@ class FamilyTests(unittest.TestCase):
             print("correctGenderRole: passed unsuccessfully ❌")
         except:
             print("correctGenderRole: failed successfully ✅")
+
+    def test_checkAuntsAndUnclesDoNotMarryNieceOrNewphew(self):
+        individual = Individual()
+    
+        # Create individuals for the test case
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        individual.create_individual(individual_dict)['ID'] = 'I2'
+        individual.create_individual(individual_dict)['ID'] = 'I3'
+        individual.create_individual(individual_dict)['ID'] = 'I4'
+        individual.create_individual(individual_dict)['ID'] = 'I5'
+
+        # Create families for the test case
+        family = Family()
+        family.create_family(family_dict)['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.get_family_list()[0]['Children'] = ['I3']
+
+        family.create_family(family_dict)['Husband ID'] = 'I3'
+        family.get_family_list()[1]['Wife ID'] = 'I4'
+        family.get_family_list()[1]['Children'] = ['I5']
+
+        # Test no marriage to aunts and uncles (normal case)
+        try:
+            noMarriageToAuntsAndUncles(individual.get_individual_list(), family.get_family_list())
+            print("No marriages to aunts and uncles")
+        except AssertionError:
+            print("Failed: Detected as married to aunts or uncles")
+
+        # Test marriage to uncle (negative case)
+        individual.get_individual_list()[4]['Spouse'] = 'I1'
+        family.get_family_list()[1]['Wife ID'] = 'I1'
+
+        try:
+            noMarriageToAuntsAndUncles(individual.get_individual_list(), family.get_family_list())
+            print("Failed to detect married to uncle")
+        except AssertionError:
+            print("Passed: Correctly detected married to uncle")
+
+        # Reset the test case
+        individual.get_individual_list()[4]['Spouse'] = None
+        family.get_family_list()[1]['Wife ID'] = 'I4'
+
+        # Test marriage to aunt (negative case)
+        individual.get_individual_list()[4]['Spouse'] = 'I2'
+        family.get_family_list()[1]['Wife ID'] = 'I2'
+
+        try:
+            noMarriageToAuntsAndUncles(individual.get_individual_list(), family.get_family_list())
+            print("Failed to detect married to aunt")
+        except AssertionError:
+            print("Passed: Correctly detected married to aunt")
+
+
+   
+    def test_noMarriageToFirstCousins(self):
+        individual = Individual()
+
+        # Create individuals for the test case
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        individual.create_individual(individual_dict)['ID'] = 'I2'
+        individual.create_individual(individual_dict)['ID'] = 'I3'
+        individual.create_individual(individual_dict)['ID'] = 'I4'
+        individual.create_individual(individual_dict)['ID'] = 'I5'
+        individual.create_individual(individual_dict)['ID'] = 'I6'
+
+        # Create families for the test case
+        family = Family()
+        family.create_family(family_dict)['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.get_family_list()[0]['Children'] = ['I3', 'I4']
+
+        family.create_family(family_dict)['Husband ID'] = 'I3'
+        family.get_family_list()[1]['Wife ID'] = 'I5'
+        family.get_family_list()[1]['Children'] = ['I6']
+
+        # Test no marriage to first cousins (normal case)
+        try:
+            noMarriageToFirstCousins(individual.get_individual_list(), family.get_family_list())
+            print("No marriages to first cousins")
+        except AssertionError:
+            print("Failed: Detected as married to first cousins")
+
+        # Test marriage to first cousin (negative case)
+        individual.get_individual_list()[5]['Spouse'] = 'I4'
+        family.get_family_list()[1]['Wife ID'] = 'I4'
+
+        try:
+            noMarriageToFirstCousins(individual.get_individual_list(), family.get_family_list())
+            print("Failed to detect married to first cousin")
+        except AssertionError:
+            print("Passed: Correctly detected married to first cousin")
+
+        
 
 def main(out=sys.stderr, verbosity=2):
     loader = unittest.TestLoader()
