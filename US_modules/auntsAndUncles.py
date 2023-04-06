@@ -1,13 +1,13 @@
 #TaeSeo
 def listAuntsAndUncles(person, individual_list, family_list):
     aunts_and_uncles = []
-    if person['Parents']:
-        for parent in person['Parents']:
-            for family in family_list:
-                if family['ID'] == parent:
-                    siblings = [sibling for sibling in family['Children'] if sibling != person['ID']]
-                    aunts_and_uncles.extend(siblings)
-    return aunts_and_uncles
+    for family in family_list:
+        if person['ID'] in family['Children']:
+            for individual in individual_list:
+                if individual['ID'] == family['Husband']:
+                    aunts_and_uncles.append(individual['ID'])
+                elif individual['ID'] == family['Wife']:
+                    aunts_and_uncles.append(individual['ID'])
 
 
 
