@@ -1,18 +1,20 @@
 #TaeSeo
 def listAuntsAndUncles(person, individual_list, family_list):
-    aunts_and_uncles = []
+    auntsAndUncles = []
     for family in family_list:
         for individual in individual_list:
-            if person['ID'] in family['Children']:
-                if individual['ID'] == family['Husband']:
-                    aunts_and_uncles.append(individual['ID'])
-                elif individual['ID'] == family['Wife']:
-                    aunts_and_uncles.append(individual['ID'])
+            if person['ID'] == individual['ID']:
+                if family['Husband ID'] == individual['ID']:
+                    auntsAndUncles.append(family['Wife ID'])
+                elif family['Wife ID'] == individual['ID']:
+                    auntsAndUncles.append(family['Husband ID'])
+    return auntsAndUncles  # Add this line to return the list
+
+
 
 def listFirstCousins(person, individual_list, family_list):
     first_cousins = []
     aunts_and_uncles = listAuntsAndUncles(person, individual_list, family_list)
-
     for aunt_or_uncle in aunts_and_uncles:
         for individual in individual_list:
             if individual['ID'] == aunt_or_uncle:

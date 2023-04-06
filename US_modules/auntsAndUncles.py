@@ -1,17 +1,18 @@
 #TaeSeo
 def listAuntsAndUncles(person, individual_list, family_list):
-    aunts_and_uncles = []
+    auntsAndUncles = []
     for family in family_list:
-        if person['ID'] in family['Children']:
-            for individual in individual_list:
-                if individual['ID'] == family['Husband']:
-                    aunts_and_uncles.append(individual['ID'])
-                elif individual['ID'] == family['Wife']:
-                    aunts_and_uncles.append(individual['ID'])
-
-
+        for individual in individual_list:
+            if person['ID'] == individual['ID']:
+                if family['Husband ID'] == individual['ID']:
+                    auntsAndUncles.append(family['Wife ID'])
+                elif family['Wife ID'] == individual['ID']:
+                    auntsAndUncles.append(family['Husband ID'])
+    return auntsAndUncles  # Add this line to return the list
 
 def noMarriageToAuntsAndUncles(individual_list, family_list):
     for individual in individual_list:
         aunts_and_uncles = listAuntsAndUncles(individual, individual_list, family_list)
-        assert(individual['Spouse'] not in aunts_and_uncles), "Error: Marriage to aunt/uncle"
+        if individual['Spouse'] in aunts_and_uncles:
+            print("Error: Marriage to aunt or uncle")
+            return False
