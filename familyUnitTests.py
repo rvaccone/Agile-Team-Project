@@ -19,16 +19,17 @@ from US_modules.correctGenderRole import correctGenderRole
 from US_modules.SiblingsNotMarried import SiblingsNotMarried
 from US_modules.NoMarriageToDescendants import noMarriageToAncestors
 from US_modules.fewer_than_fifteen import fewer_than_fifteen
-<<<<<<< Updated upstream
-=======
+
 from US_modules.uniqueNameAndBirthday import uniqueNameAndBirthday
 from US_modules.uniqueFamilyBySpouses import uniqueFamilyBySpouses
 from US_modules.auntsAndUncles import noMarriageToAuntsAndUncles
 from US_modules.auntsAndUncles import listAuntsAndUncles
 from US_modules.noMarryFirstCousin import noMarriageToFirstCousins
 from US_modules.noMarryFirstCousin import listFirstCousins
-
->>>>>>> Stashed changes
+from US_modules.uniqueNameAndBirthday import uniqueNameAndBirthday
+from US_modules.uniqueFamilyBySpouses import uniqueFamilyBySpouses
+from US_modules.IncludeIndividualAges import IncludeIndividualAges
+from US_modules.OrderSiblingsByAge import OrderSiblingsByAge
 
 class Family:
     # Initializing an empty list to contain all the families
@@ -806,8 +807,123 @@ class FamilyTests(unittest.TestCase):
             print(f"Siblings are spaced incorrectly: {str(individual.get_individual_list())} ❌")
         except:
             print(f"Failed successfully with error {str(individual.get_individual_list())} ✅")
+    
+    def test_checkUniqueNameAndBirthday(self):
+        individual = Individual()
+        #Test 1 should pass
+        individual.create_individual(individual_dict)['Birthday'] = '27 AUG 2002'
+        individual.get_individual_list()[0]['Name'] = 'Taeseo Um'
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        individual.create_individual(individual_dict)['Birthday'] = '10 FEB 2002'
+        individual.get_individual_list()[1]['Name'] = 'Rocco Vaccone'
+        individual.get_individual_list()[1]['ID'] = 'I2'
+        try: 
+            uniqueNameAndBirthday(individual.get_individual_list())
+            print(f"Unique name and birthday: {str(individual.get_individual_list())} ✅")
+        except:
+            print(f"Failed with error {str(individual.get_individual_list())} ❌")
+        #Test 2 should fail
+        individual.get_individual_list()[0]['Name'] = 'Rocco Vaccone'
+        individual.get_individual_list()[0]['Birthday'] = '10 FEB 2002'
+        try:
+            uniqueNameAndBirthday(individual.get_individual_list())
+            print(f"Unique name and birthday: {str(individual.get_individual_list())} ❌")
+        except:
+            print(f"Failed successfully with error {str(individual.get_individual_list())} ✅")
+    def test_checkUniqueFamilyBySpouses(self):
+        #No more than one family with the same spouses by name and the same marriage date should appear in a GEDCOM file
+        individual=Individual()
+        family=Family()
+        family.create_family(family_dict)['Marriage Date'] = '1 JAN 2002'
+        family.get_family_list()[0]['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.get_family_list()[0]['Husband Name'] = 'Rocco Vaccone'
+        family.get_family_list()[0]['Wife Name'] = 'Aaliyah Bridges'
+        family.create_family(family_dict)['Marriage Date'] = '6 JUN 1998'
+        family.get_family_list()[1]['Husband ID'] = 'I3'
+        family.get_family_list()[1]['Wife ID'] = 'I4'
+        family.get_family_list()[1]['Husband Name'] = 'Taesoe Um'
+        family.get_family_list()[1]['Wife Name'] = 'Trae Young'
+        individual.create_individual(individual_dict)['Birthday'] = '27 AUG 2002'
+        individual.get_individual_list()[0]['Name'] = 'Rocco Vaccone'
+        individual.get_individual_list()[0]['ID'] = 'I1'
+        individual.create_individual(individual_dict)['Birthday'] = '27 AUG 2002'
+        individual.get_individual_list()[1]['Name'] = 'Aaliyah Bridges'
+        individual.get_individual_list()[1]['ID'] = 'I2'
+        individual.create_individual(individual_dict)['Birthday'] = '27 AUG 2002'
+        individual.get_individual_list()[2]['Name'] = 'Taesoe Um'
+        individual.get_individual_list()[2]['ID'] = 'I3'
+        individual.create_individual(individual_dict)['Birthday'] = '27 AUG 2002'
+        individual.get_individual_list()[3]['Name'] = 'Trae Young'
+        individual.get_individual_list()[3]['ID'] = 'I4'
+        try:
+            uniqueFamilyBySpouses(family.get_family_list(), individual.get_individual_list())
+            print(f"Unique family by spouse: {str(family.get_family_list())} ✅")
+        except AssertionError:
+            print(f"Failed with error {str(family.get_family_list())} ❌")
+        family.get_family_list()[1]['Husband Name'] = 'Rocco Vaccone'
+        family.get_family_list()[1]['Wife Name'] = 'Aaliyah Bridges'
+        family.get_family_list()[1]['Marriage Date'] = '1 JAN 2002'
+        try:
+            uniqueFamilyBySpouses(family.get_family_list(), individual.get_individual_list())
+            print(f"Unique family by spouse: {str(individual.get_individual_list())} ❌")
+        except:
+            print(f"Failed successfully with error {str(individual.get_individual_list())} ✅")
 
-def main(out = sys.stderr, verbosity = 2):
+    def test_IncludeIndividualAges(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I7'
+        individual.get_individual_list()[0]['Age'] = '10'
+
+        individual.create_individual(individual_dict)['ID'] = 'I9'
+        individual.get_individual_list()[1]['Age'] = '15'
+
+        try:
+            IncludeIndividualAges(individual.get_individual_list())
+            print("Passed: All individuals have ages.")
+        except AssertionError:
+            print("Failed: Did not detect all ages when they were present.")
+
+
+        individual.create_individual(individual_dict)['ID'] = 'I5'
+
+        try:
+            IncludeIndividualAges(individual.get_individual_list())
+            print("Failed: Did not detect missing age")
+        except AssertionError:
+            print("Passed: Successfully detected missing age")
+
+
+    def test_OrderSiblingsByAge(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['ID'] = 'I7'
+        individual.get_individual_list()[0]['Age'] = '10'
+
+        individual.create_individual(individual_dict)['ID'] = 'I9'
+        individual.get_individual_list()[1]['Age'] = '15'
+
+        individual.create_individual(individual_dict)['ID'] = 'I10'
+        individual.get_individual_list()[2]['Children'] = ['I9','I7']
+
+        family = Family()
+        family.create_family(family_dict)['Husband ID'] = 'I10'
+        family.get_family_list()[0]['Children'] = ['I9','I7']
+
+
+        try:
+            OrderSiblingsByAge(individual.get_individual_list(),family.get_family_list())
+            print("Passed: Siblings ordered by age")
+        except AssertionError:
+            print("Failed: Did not detect siblings ordered by age when they were")
+
+        family.get_family_list()[0]['Children'] = ['I7','I9']
+
+        try:
+            OrderSiblingsByAge(individual.get_individual_list(),family.get_family_list())
+            print("Failed: Detected siblings ordered by age when they were not")
+        except AssertionError:
+            print("Passed: Successfully detected siblings not ordered by age")
+
     def test_uniqueIDs(self):
         # Adding two individuals with different IDs
         ind = Individual()
