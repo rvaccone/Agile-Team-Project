@@ -10,6 +10,8 @@ from US_modules.Parents_not_too_old import parents_not_too_old
 from US_modules.male_lname_same import male_lname_same
 from US_modules.listDeceased import listDeceased
 from US_modules.listLivingMarried import listLivingMarried
+from US_modules.unique_firstnames import unique_first
+from US_modules.corresponding_entries import corresponding_entries
 
 
 class Individual:
@@ -336,6 +338,74 @@ class IndividualTests(unittest.TestCase):
             print('Same Last Name')
         except:
             print('Different Last names')
+
+    def test_unqiue_firstnames(self):
+        individual = Individual()
+        
+        individual.create_individual(individual_dict)['Name'] = 'Joe Biden' 
+        individual.get_individual_list()[0]['ID'] = 'I2'
+        individual.get_individual_list()[0]['Children'] = ['I1','I6']
+        
+        individual1 = Individual()
+
+        individual1.create_individual(individual_dict)['Name'] = 'Hunter Biden'
+        individual1.get_individual_list()[0]['ID'] = 'I1'
+
+        individual2 = Individual()
+
+        individual2.create_individual(individual_dict)['Name'] = 'Hunter Biden'
+        individual2.get_individual_list()[0]['ID'] = 'I6'
+        
+        
+        try:
+            unique_first(individual.get_individual_list())
+            print('Different First Names')
+        except:
+            print('Two or more children have the same first names')
+
+        individual = Individual()
+        
+        individual.create_individual(individual_dict)['Name'] = 'Joe Biden' 
+        individual.get_individual_list()[0]['ID'] = 'I2'
+        individual.get_individual_list()[0]['Children'] = ['I1','I6']
+        
+        individual = Individual()
+
+        individual.create_individual(individual_dict)['Name'] = 'Hunter Biden'
+        individual.get_individual_list()[0]['ID'] = 'I1'
+
+        individual = Individual()
+
+        individual.create_individual(individual_dict)['Name'] = 'Hillary Biden'
+        individual.get_individual_list()[0]['ID'] = 'I6'
+        
+        
+        try:
+            unique_first(individual.get_individual_list())
+            print('Different First Names')
+        except:
+            print('Two or more children have the same first names')
+
+    def test_corresponding_entries(self):
+        individual = Individual()
+        individual.create_individual(individual_dict)['Family'] = 'N/A'
+        individual.get_individual_list()[0]['Spouse'] = 'N/A'
+        individual.get_individual_list()[0]['Children'] = []
+        try:
+            corresponding_entries(individual.get_individual_list())
+            print('Individual has a family role')
+        except:
+            print('No Family Role')
+
+        individual = Individual()
+        individual.create_individual(individual_dict)['Family'] = 'F2'
+        individual.get_individual_list()[0]['Spouse'] = 'I7'
+        individual.get_individual_list()[0]['Children'] = ['I1']
+        try:
+            corresponding_entries(individual.get_individual_list())
+            print('Individual has a family role')
+        except:
+            print('No Family Role')
 
     def test_checkParentsNotTooOld(self):
         individual = Individual()
