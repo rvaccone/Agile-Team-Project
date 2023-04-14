@@ -32,6 +32,8 @@ from US_modules.uniqueNameAndBirthday import uniqueNameAndBirthday
 from US_modules.uniqueFamilyBySpouses import uniqueFamilyBySpouses
 from US_modules.IncludeIndividualAges import IncludeIndividualAges
 from US_modules.OrderSiblingsByAge import OrderSiblingsByAge
+from US_modules.upcomingAnniversary import is_spouse_alive
+from US_modules.upcomingAnniversary import upcoming_anniversary
 
 class Family:
     # Initializing an empty list to contain all the families
@@ -1158,6 +1160,30 @@ class FamilyTests(unittest.TestCase):
         except AssertionError:
             print("Passed: Correctly detected married to first cousin")
 
+    def test_upcoming_anniversary(self):
+        individual_list = [
+            {'ID': '@I1@', 'Alive': True},
+            {'ID': '@I2@', 'Alive': True},
+            {'ID': '@I3@', 'Alive': True},
+            {'ID': '@I4@', 'Alive': True},
+            {'ID': '@I5@', 'Alive': False},
+            {'ID': '@I6@', 'Alive': True},
+        ]
+
+        family_list = [
+            {'Marriage Date': '15 APR 2000', 'Divorce Date': 'N/A', 'Husband ID': '@I1@', 'Wife ID': '@I2@'},
+            {'Marriage Date': 'N/A', 'Divorce Date': 'N/A', 'Husband ID': '@I3@', 'Wife ID': '@I4@'},
+            {'Marriage Date': '12 MAY 2015', 'Divorce Date': '12 MAY 2020', 'Husband ID': '@I5@', 'Wife ID': '@I6@'},
+        ]
+
+        output = upcoming_anniversary(individual_list, family_list)
+        expected_output = ['2000-04-15']
+
+        try:
+            self.assertEqual(output, expected_output, f"The return value is incorrect, expected: {expected_output}, got: {output} ❌")
+            print("Passed successfully ✅")
+        except AssertionError as warn:
+            print(warn)
         
 
 def main(out=sys.stderr, verbosity=2):
