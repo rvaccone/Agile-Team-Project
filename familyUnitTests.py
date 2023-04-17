@@ -34,6 +34,8 @@ from US_modules.IncludeIndividualAges import IncludeIndividualAges
 from US_modules.OrderSiblingsByAge import OrderSiblingsByAge
 from US_modules.upcomingAnniversary import is_spouse_alive
 from US_modules.upcomingAnniversary import upcoming_anniversary
+from US_modules.includePartialDates import includePartialDates
+from US_modules.rejectIllegitimateDates import rejectIllegitimateDates
 
 class Family:
     # Initializing an empty list to contain all the families
@@ -1185,6 +1187,65 @@ class FamilyTests(unittest.TestCase):
         except AssertionError as warn:
             print(warn)
         
+    def test_includePartialDates(self):
+        # Create a family
+        fam = Family()
+        
+        # Create families for the test case
+        fam.create_modified_family(family_dict, 
+            {'Marriage Date': '1 JAN 1990', 'Divorce Date': '1 JAN 1990'}
+        ) # With day and month - should pass
+        fam.create_modified_family(family_dict, 
+            {'Marriage Date': 'JAN 1990', 'Divorce Date': 'JAN 1990'}
+        ) # Without day - should pass
+        fam.create_modified_family(family_dict, 
+            {'Marriage Date': '1990', 'Divorce Date': '1990'}
+        ) # Without day and month - should pass
+
+        # Calling the verification function should not raise an error
+        try:
+            includePartialDates(individual_list=list(), family_list=fam.get_family_list())
+            print('All dates are valid ✅')
+        except:
+            print('At least one date is invalid ❌')
+
+        # Create a family with an invalid date
+        fam.create_modified_family(family_dict,
+            {'Marriage Date': '1 JAN', 'Divorce Date': '1 JAN'}
+        ) # Without year - should fail
+
+        # Calling the verification function should raise an error
+        try:
+            includePartialDates(individual_list=list(), family_list=fam.get_family_list())
+            print('All dates are valid despite an invalid date ❌')
+        except:
+            print('At least one date is invalid ✅')
+
+    def test_rejectIllegitimateDates(self):
+        # Create the family
+        f = Family()
+
+        # Create a family with a valid date
+        f.create_modified_family(family_dict,
+            {'Marriage Date': '1 JAN 1990', 'Divorce Date': '1 JAN 1990'}
+        )
+
+        try:
+            rejectIllegitimateDates(individual_list=list(), family_list=f.get_family_list())
+            print('All dates are valid ✅')
+        except:
+            print('At least one date is invalid ❌')
+
+        # Create a family with an invalid date
+        f.create_modified_family(family_dict,
+            {'Marriage Date': '40 JAN 1990', 'Divorce Date': '40 JAN 1990'}
+        )
+
+        try:
+            rejectIllegitimateDates(individual_list=list(), family_list=f.get_family_list())
+            print('All dates are valid despite having an invalid date ❌')
+        except:
+            print('At least one date is invalid ✅')
 
 def main(out=sys.stderr, verbosity=2):
     loader = unittest.TestLoader()
