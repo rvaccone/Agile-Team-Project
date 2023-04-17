@@ -12,6 +12,8 @@ from US_modules.listDeceased import listDeceased
 from US_modules.listLivingMarried import listLivingMarried
 from US_modules.unique_firstnames import unique_first
 from US_modules.corresponding_entries import corresponding_entries
+from US_modules.includePartialDates import includePartialDates
+from US_modules.rejectIllegitimateDates import rejectIllegitimateDates
 
 
 class Individual:
@@ -485,6 +487,68 @@ class IndividualTests(unittest.TestCase):
             self.assertEqual(numberOfLivingMarried, 2, 'Error: Incorrect')
         except AssertionError:
             print('Failed successfully with error: ' + str(numberOfLivingMarried))
+
+    def test_includePartialDates(self):
+        # We want to write tests to ensure that we can accept and use dates without days or without days and months
+        # Create the individual
+        individual = Individual()
+
+        # Create three individuals with different dates
+        individual.create_modified_individual(
+            individual_dict, {'Birthday': '1 JAN 1990', 'Death': '1 JAN 2000'}
+        ) # With day and month - should pass
+        individual.create_modified_individual(
+            individual_dict, {'Birthday': 'JAN 1990', 'Death': 'JAN 2000'}
+        ) # Without day - should pass
+        individual.create_modified_individual(
+            individual_dict, {'Birthday': '1990', 'Death': '2000'}
+        ) # Without day and month - should pass
+
+        # Calling the function on each individual should not raise an error
+        try:
+            includePartialDates(individual.get_individual_list(), family_list=list())
+            print('All dates are valid ✅')
+        except:
+            print('At least one date is invalid ❌')
+
+        # Create an individual with an invalid date
+        individual.create_modified_individual(
+            individual_dict, {'Birthday': '1 JAN', 'Death': '1 JAN'}
+        ) # Without year - should fail
+
+        # Testing if the function raises an error on the invalid date
+        try:
+            includePartialDates(individual.get_individual_list(), family_list=list())
+            print('All dates are valid despite having an invalid date ❌')
+        except:
+            print('At least one date is invalid ✅')
+
+
+    def test_rejectIllegitimateDates(self):
+        # Create the individual
+        i = Individual()
+
+        # Create an individual with a valid date
+        i.create_modified_individual(
+            individual_dict, {'Birthday': '1 JAN 1990', 'Death': '1 JAN 2000'}
+        )
+
+        try:
+            rejectIllegitimateDates(i.get_individual_list(), family_list=list())
+            print('All dates are valid ✅')
+        except:
+            print('At least one date is invalid ❌')
+
+        # Create an individual with an invalid date
+        i.create_modified_individual(
+            individual_dict, {'Birthday': '40 JAN 1990', 'Death': '40 JAN 2000'}
+        )
+
+        try:
+            rejectIllegitimateDates(i.get_individual_list(), family_list=list())
+            print('All dates are valid despite having an invalid date ❌')
+        except:
+            print('At least one date is invalid ✅')
 
 
 
