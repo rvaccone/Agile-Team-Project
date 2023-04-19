@@ -2,13 +2,16 @@
 from datetime import datetime, timedelta
 
 def recent_Death(individual_list):
-    recentDeath = []
+    recent_death_array = []
     for individual in individual_list:
+        #Checks if the recent death is within 365 days of today
         days_since_death = datetime.now().date() - datetime.strptime(individual['Death'], '%d %b %Y').date()
         if days_since_death < timedelta(days=365):
-              recentDeath.append(individual['ID'])
-    print(recentDeath)
-    assert(len(recentDeath) == len(recentDeath))
+              #adds individual id to array
+              recent_death_array.append(individual['ID'])
+    #prints list of recently deceased
+    print(recent_death_array)
+    assert(len(recent_death_array) == len(recent_death_array))
                 
         
     
