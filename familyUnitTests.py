@@ -36,6 +36,8 @@ from US_modules.upcomingAnniversary import is_spouse_alive
 from US_modules.upcomingAnniversary import upcoming_anniversary
 from US_modules.includePartialDates import includePartialDates
 from US_modules.rejectIllegitimateDates import rejectIllegitimateDates
+from US_modules.listUpcomingBirthdays import listUpcomingBirthdays
+from US_modules.listRecentSurvivors import listRecentSurvivors
 
 class Family:
     # Initializing an empty list to contain all the families
@@ -1246,6 +1248,54 @@ class FamilyTests(unittest.TestCase):
             print('All dates are valid despite having an invalid date ❌')
         except:
             print('At least one date is invalid ✅')
+
+    def test_listUpcomingBirthdays(self):
+        individual = Individual()
+    
+        # Create individuals for the test case
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        individual.create_individual(individual_dict)['ID'] = 'I2'
+        individual.create_individual(individual_dict)['ID'] = 'I3'
+        individual.create_individual(individual_dict)['ID'] = 'I4'
+        individual.create_individual(individual_dict)['ID'] = 'I5'
+        individual.get_individual_list()[0]['Birthday'] = '1 JAN 1990'
+        individual.get_individual_list()[1]['Birthday'] = '1 JAN 2010'
+        individual.get_individual_list()[2]['Birthday'] = '5 AUG 2020'
+        individual.get_individual_list()[3]['Birthday'] = '5 APR 2010'
+        individual.get_individual_list()[4]['Birthday'] ='30 APR 2010'
+
+        family = Family()
+        family.create_family(family_dict)
+
+        try:
+            listUpcomingBirthdays(individual.get_individual_list(),family.get_family_list())
+        except AssertionError:
+            print("ERROR: List upcoming birthdays failed")
+
+    def test_listRecentSurvivors(self):
+        individual = Individual()
+    
+        # Create individuals for the test case
+        individual.create_individual(individual_dict)['ID'] = 'I1'
+        individual.create_individual(individual_dict)['ID'] = 'I2'
+        individual.create_individual(individual_dict)['ID'] = 'I3'
+        individual.create_individual(individual_dict)['ID'] = 'I4'
+        individual.create_individual(individual_dict)['ID'] = 'I5'
+        individual.get_individual_list()[0]['Death'] = '1 JAN 1990'
+        individual.get_individual_list()[1]['Death'] = '1 JAN 2010'
+        individual.get_individual_list()[2]['Death'] = '5 AUG 2025'
+        individual.get_individual_list()[3]['Death'] = '5 APR 2010'
+        individual.get_individual_list()[4]['Death'] = '30 APR 2010'
+
+        family = Family()
+        family.create_family(family_dict)
+
+        try:
+            listRecentSurvivors(individual.get_individual_list(),family.get_family_list())
+
+        except AssertionError:
+            print("ERROR: List recent survivors failed")
+
 
 def main(out=sys.stderr, verbosity=2):
     loader = unittest.TestLoader()
