@@ -14,6 +14,8 @@ from US_modules.unique_firstnames import unique_first
 from US_modules.corresponding_entries import corresponding_entries
 from US_modules.includePartialDates import includePartialDates
 from US_modules.rejectIllegitimateDates import rejectIllegitimateDates
+from US_modules.recentBirths import recent_Births
+from US_modules.recentDeaths import recent_Death
 
 
 class Individual:
@@ -523,10 +525,47 @@ class IndividualTests(unittest.TestCase):
         except:
             print('At least one date is invalid ✅')
 
+    def test_recentBirths(self):
+        i = Individual()
+        i.create_modified_individual(individual_dict, {'Birthday': '1 JAN 2023', 'ID': 'I6'} )
+        
+        #Function will always return true
+        try:
+            recent_Births(i.get_individual_list())
+            print('Individuals recent born')
+        except:
+            print('Individual NOT recent born')
+
+        b = Individual()
+        b.create_modified_individual(individual_dict, {'Birthday': '1 JAN 2020', 'ID': 'I7'} )
+        try:
+            recent_Births(b.get_individual_list())
+            print('Individuals recent born')
+        except:
+            print('Individual NOT recent born')
+
+    def test_recentDeaths(self):
+            i = Individual()
+            i.create_modified_individual(individual_dict, {'Death': '1 JAN 2023', 'ID': 'I6'} )
+            
+            #Function will always return true
+            try:
+                recent_Death(i.get_individual_list())
+                print('Individuals recent dead')
+            except:
+                print('Individual NOT recent dead')
+
+            b = Individual()
+            b.create_modified_individual(individual_dict, {'Death': '1 JAN 2020', 'ID': 'I7'} )
+            try:
+                recent_Death(b.get_individual_list())
+                print('Individuals recent dead')
+            except:
+                print('Individual NOT recent dead')
 
     def test_rejectIllegitimateDates(self):
         # Create the individual
-        i = Individual()
+        
 
         # Create an individual with a valid date
         i.create_modified_individual(
