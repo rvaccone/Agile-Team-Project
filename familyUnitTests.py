@@ -36,8 +36,8 @@ from US_modules.upcomingAnniversary import is_spouse_alive
 from US_modules.upcomingAnniversary import upcoming_anniversary
 from US_modules.includePartialDates import includePartialDates
 from US_modules.rejectIllegitimateDates import rejectIllegitimateDates
-from US_modules.listUpcomingBirthdays import listUpcomingBirthdays
-from US_modules.listRecentSurvivors import listRecentSurvivors
+from US_modules.listOrphans import listOrphans
+from US_modules.listLargeAgeGaps import listLargeAgeGaps
 
 class Family:
     # Initializing an empty list to contain all the families
@@ -1249,54 +1249,59 @@ class FamilyTests(unittest.TestCase):
         except:
             print('At least one date is invalid ✅')
 
-    def test_listUpcomingBirthdays(self):
-        individual = Individual()
-    
-        # Create individuals for the test case
+    def test_listOrphans(self):
+        # Create the family
+        family=Family()
+        individual=Individual()
+
         individual.create_individual(individual_dict)['ID'] = 'I1'
         individual.create_individual(individual_dict)['ID'] = 'I2'
         individual.create_individual(individual_dict)['ID'] = 'I3'
         individual.create_individual(individual_dict)['ID'] = 'I4'
         individual.create_individual(individual_dict)['ID'] = 'I5'
-        individual.get_individual_list()[0]['Birthday'] = '1 JAN 1990'
-        individual.get_individual_list()[1]['Birthday'] = '1 JAN 2010'
-        individual.get_individual_list()[2]['Birthday'] = '5 AUG 2020'
-        individual.get_individual_list()[3]['Birthday'] = '5 APR 2010'
-        individual.get_individual_list()[4]['Birthday'] ='30 APR 2010'
-
+        individual.create_individual(individual_dict)['ID'] = 'I6'
+        # Create families for the test case
+        family.create_family(family_dict)['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.get_family_list()[0]['Children'] = ['I3', 'I4']
+        family.create_family(family_dict)['Husband ID'] = 'I5'
+        family.get_family_list()[1]['Wife ID'] = 'I6'
+        family.get_family_list()[1]['Children'] = ['I7', 'I8']
+        # Calling the verification function should not raise an error
+        if (len(listOrphans(individual.get_individual_list(), family.get_family_list()))<1):
+            print('No orphans are found ✅')
+        else:
+            print('Orphan found when there is not one ❌')
+        individual.get_individual_list()[0]['Alive'] = False
+        individual.get_individual_list()[1]['Alive'] = False
+        individual.get_individual_list()[2]['Age'] = 13
+        individual.get_individual_list()[3]['Age'] = 13
+        if (len(listOrphans(individual.get_individual_list(), family.get_family_list()))==2):
+            print('2 orphans found! ✅')
+        else:
+            print('No orphans are found ❌')
+        
+    def test_listLargeAgeGaps(self):
         family = Family()
-        family.create_family(family_dict)
-
-        try:
-            listUpcomingBirthdays(individual.get_individual_list(),family.get_family_list())
-        except AssertionError:
-            print("ERROR: List upcoming birthdays failed")
-
-    def test_listRecentSurvivors(self):
         individual = Individual()
-    
-        # Create individuals for the test case
-        individual.create_individual(individual_dict)['ID'] = 'I1'
+        individual.create_individual(individual_dict)['ID'] = 'I1' 
         individual.create_individual(individual_dict)['ID'] = 'I2'
-        individual.create_individual(individual_dict)['ID'] = 'I3'
-        individual.create_individual(individual_dict)['ID'] = 'I4'
-        individual.create_individual(individual_dict)['ID'] = 'I5'
-        individual.get_individual_list()[0]['Death'] = '1 JAN 1990'
-        individual.get_individual_list()[1]['Death'] = '1 JAN 2010'
-        individual.get_individual_list()[2]['Death'] = '5 AUG 2025'
-        individual.get_individual_list()[3]['Death'] = '5 APR 2010'
-        individual.get_individual_list()[4]['Death'] = '30 APR 2010'
 
-        family = Family()
-        family.create_family(family_dict)
-
-        try:
-            listRecentSurvivors(individual.get_individual_list(),family.get_family_list())
-
-        except AssertionError:
-            print("ERROR: List recent survivors failed")
-
-
+        family.create_family(family_dict)['Husband ID'] = 'I1'
+        family.get_family_list()[0]['Wife ID'] = 'I2'
+        family.get_family_list()[0]['Marriage Date'] = '1 AUG 1990'
+        individual.get_individual_list()[0]['Birthday'] = '3 MAY 1960'
+        individual.get_individual_list()[1]['Birthday'] = '5 JAN 1960'
+        if (len(listLargeAgeGaps(individual.get_individual_list(), family.get_family_list()))>0):
+            print('Age gap found when it is not supposed to ❌')
+        else:
+            print('No age gap found ✅')
+        individual.get_individual_list()[0]['Birthday'] = '3 MAY 1985'
+        if (len(listLargeAgeGaps(individual.get_individual_list(), family.get_family_list()))>0):
+            print('1 Age gap found! ✅')
+        else:
+            print('No age gap found ❌')
+        
 def main(out=sys.stderr, verbosity=2):
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromModule(sys.modules[__name__])
